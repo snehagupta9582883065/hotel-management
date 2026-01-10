@@ -134,8 +134,6 @@ body {
 .layout-container {
   display: flex;
   min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
 }
 
 @media (max-width: 1024px) {
@@ -319,17 +317,28 @@ body {
    ========================================= */
 .sidebar {
   height: 100vh;
+  width: var(--sidebar-width);
   padding: 32px 24px;
   display: flex;
   flex-direction: column;
   z-index: 50;
+  flex-shrink: 0;
   background: var(--bg-glass);
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    position: sticky;
+    top: 0;
+  }
 }
 
 @media (max-width: 1024px) {
   .sidebar {
     width: 280px;
     padding: 24px 16px;
+    position: fixed;
+    /* Ensure it's fixed on mobile */
   }
 }
 
