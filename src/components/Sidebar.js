@@ -38,15 +38,12 @@ const MENU_ITEMS = [
         ],
     },
     {
-        name: "Reservation & Booking",
+        name: "Booking",
         icon: CalendarDays,
         submenu: [
             { name: "Booking Calendar", path: "/booking-calendar" },
-            { name: "New Booking", path: "/new-booking" },
             { name: "Booking List", path: "/booking-list" },
             { name: "Group Booking", path: "/group-booking" },
-            { name: "Check-in", path: "/check-in" },
-            { name: "Check-out", path: "/check-out" },
         ],
     },
     {

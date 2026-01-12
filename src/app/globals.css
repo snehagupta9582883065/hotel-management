@@ -95,7 +95,7 @@ body {
   transition: opacity 0.3s ease;
 }
 
-.card:hover {
+/* .card:hover {
   transform: translateY(-4px) scale(1.005);
   box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1), 0 0 2px var(--accent-primary);
   border-color: var(--accent-primary);
@@ -103,7 +103,7 @@ body {
 
 .card:hover::before {
   opacity: 1;
-}
+} */
 
 .title-gradient {
   background: linear-gradient(to right, var(--accent-primary), #c084fc);

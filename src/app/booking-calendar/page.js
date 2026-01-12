@@ -10,17 +10,29 @@ export default function BookingCalendar() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [viewMode, setViewMode] = useState('month');
+  const [activeTab, setActiveTab] = useState('guest');
   const [formData, setFormData] = useState({
     guestName: '',
     email: '',
     phone: '',
+    mobileNumber: '',
     roomType: '',
     roomNumber: '',
+    numRooms: '',
     guests: '',
     checkIn: '',
     checkOut: '',
+    bookingSource: '',
     amount: '',
-    notes: ''
+    advanceAmount: '',
+    notes: '',
+    // C-Form fields
+    passportNumber: '',
+    visaNumber: '',
+    nationality: '',
+    arrivalFrom: '',
+    proceedingTo: '',
+    purposeOfVisit: ''
   });
 
   // Mock bookings data with multi-day support
@@ -134,6 +146,7 @@ export default function BookingCalendar() {
     const dateBookings = getBookingsForDate(date);
     if (dateBookings.length === 0) {
       setShowAddModal(true);
+      setActiveTab('guest');
       setFormData({
         ...formData,
         checkIn: date.toISOString().split('T')[0],
@@ -157,8 +170,10 @@ export default function BookingCalendar() {
     const newBooking = {
       id: bookings.length + 1,
       ...formData,
-      amount: parseFloat(formData.amount),
-      guests: parseInt(formData.guests),
+      amount: parseFloat(formData.amount || 0),
+      advanceAmount: parseFloat(formData.advanceAmount || 0),
+      guests: parseInt(formData.guests || 1),
+      numRooms: parseInt(formData.numRooms || 1),
       status: 'pending'
     };
     setBookings([...bookings, newBooking]);
@@ -179,17 +194,28 @@ export default function BookingCalendar() {
   };
 
   const resetForm = () => {
+    setActiveTab('guest');
     setFormData({
       guestName: '',
       email: '',
       phone: '',
+      mobileNumber: '',
       roomType: '',
       roomNumber: '',
+      numRooms: '',
       guests: '',
       checkIn: '',
       checkOut: '',
+      bookingSource: '',
       amount: '',
-      notes: ''
+      advanceAmount: '',
+      notes: '',
+      passportNumber: '',
+      visaNumber: '',
+      nationality: '',
+      arrivalFrom: '',
+      proceedingTo: '',
+      purposeOfVisit: ''
     });
   };
 
@@ -214,17 +240,18 @@ export default function BookingCalendar() {
     <div className="flex flex-col gap-6 animate-fadeIn">
       {/* Header with Stats */}
       <div className="flex flex-col gap-6">
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-400 bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-400 bg-clip-text text-transparent mb-1 md:mb-2">
               Booking Calendar
             </h1>
-            <p className="text-text-secondary text-sm font-medium">Manage your hotel bookings and reservations</p>
+            <p className="text-text-secondary text-xs md:text-sm font-medium">Manage your hotel bookings and reservations</p>
           </div>
 
           <button
             onClick={() => {
               setShowAddModal(true);
+              setActiveTab('guest');
               setSelectedDate(new Date());
               setFormData({
                 ...formData,
@@ -232,7 +259,7 @@ export default function BookingCalendar() {
                 checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0]
               });
             }}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5"
           >
             <Calendar size={18} />
             New Booking
@@ -240,131 +267,135 @@ export default function BookingCalendar() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-bg-secondary rounded-xl p-4 border border-border-color">
-            <p className="text-xs text-text-secondary font-medium mb-1">Total Bookings</p>
-            <p className="text-2xl font-bold text-text-primary">{stats.total}</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          <div className="bg-bg-secondary rounded-xl p-3 md:p-4 border border-border-color">
+            <p className="text-[10px] md:text-xs text-text-secondary font-medium mb-0.5 md:mb-1 uppercase tracking-wider">Total Bookings</p>
+            <p className="text-xl md:text-2xl font-bold text-text-primary">{stats.total}</p>
           </div>
-          <div className="bg-bg-secondary rounded-xl p-4 border border-border-color">
-            <p className="text-xs text-text-secondary font-medium mb-1">Confirmed</p>
-            <p className="text-2xl font-bold text-green-600">{stats.confirmed}</p>
+          <div className="bg-bg-secondary rounded-xl p-3 md:p-4 border border-border-color">
+            <p className="text-[10px] md:text-xs text-text-secondary font-medium mb-0.5 md:mb-1 uppercase tracking-wider">Confirmed</p>
+            <p className="text-xl md:text-2xl font-bold text-green-600">{stats.confirmed}</p>
           </div>
-          <div className="bg-bg-secondary rounded-xl p-4 border border-border-color">
-            <p className="text-xs text-text-secondary font-medium mb-1">Pending</p>
-            <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
+          <div className="bg-bg-secondary rounded-xl p-3 md:p-4 border border-border-color">
+            <p className="text-[10px] md:text-xs text-text-secondary font-medium mb-0.5 md:mb-1 uppercase tracking-wider">Pending</p>
+            <p className="text-xl md:text-2xl font-bold text-yellow-600">{stats.pending}</p>
           </div>
-          <div className="bg-bg-secondary rounded-xl p-4 border border-border-color">
-            <p className="text-xs text-text-secondary font-medium mb-1">Total Revenue</p>
-            <p className="text-2xl font-bold text-purple-600">${stats.revenue.toLocaleString()}</p>
+          <div className="bg-bg-secondary rounded-xl p-3 md:p-4 border border-border-color">
+            <p className="text-[10px] md:text-xs text-text-secondary font-medium mb-0.5 md:mb-1 uppercase tracking-wider">Revenue</p>
+            <p className="text-xl md:text-2xl font-bold text-purple-600">${stats.revenue.toLocaleString()}</p>
           </div>
         </div>
       </div>
 
       {/* Calendar Controls */}
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto justify-between sm:justify-start">
           <button
             onClick={handlePrevMonth}
-            className="w-10 h-10 rounded-xl border border-border-color bg-bg-secondary text-text-secondary flex items-center justify-center hover:border-purple-500 hover:text-purple-500 hover:bg-purple-500/5 transition-all"
+            className="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl border border-border-color bg-bg-secondary text-text-secondary flex items-center justify-center hover:border-purple-500 hover:text-purple-500 hover:bg-purple-500/5 transition-all"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={18} />
           </button>
 
-          <h2 className="text-xl font-bold text-text-primary min-w-[200px] text-center">
+          <h2 className="text-base md:text-xl font-bold text-text-primary min-w-[140px] md:min-w-[200px] text-center">
             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
 
           <button
             onClick={handleNextMonth}
-            className="w-10 h-10 rounded-xl border border-border-color bg-bg-secondary text-text-secondary flex items-center justify-center hover:border-purple-500 hover:text-purple-500 hover:bg-purple-500/5 transition-all"
+            className="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl border border-border-color bg-bg-secondary text-text-secondary flex items-center justify-center hover:border-purple-500 hover:text-purple-500 hover:bg-purple-500/5 transition-all"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={18} />
           </button>
         </div>
 
         <button
           onClick={handleToday}
-          className="px-4 py-2 rounded-xl border border-border-color bg-bg-secondary text-text-primary text-sm font-medium hover:border-purple-500 hover:bg-purple-500/5 transition-all"
+          className="w-full sm:w-auto px-4 py-2 rounded-xl border border-border-color bg-bg-secondary text-text-primary text-sm font-medium hover:border-purple-500 hover:bg-purple-500/5 transition-all"
         >
           Today
         </button>
       </div>
 
       {/* Calendar */}
-      <div className="card p-6">
-        {/* Day names */}
-        <div className="grid grid-cols-7 gap-2 mb-4">
-          {dayNames.map(day => (
-            <div key={day} className="text-center text-xs font-bold text-text-secondary uppercase tracking-wider py-2">
-              {day}
+      <div className="card p-3 md:p-6 overflow-hidden">
+        <div className="overflow-x-auto pb-4 custom-scrollbar">
+          <div className="min-w-[800px]">
+            {/* Day names */}
+            <div className="grid grid-cols-7 gap-1 md:gap-2 mb-2 md:mb-4">
+              {dayNames.map(day => (
+                <div key={day} className="text-center text-[10px] md:text-xs font-bold text-text-secondary uppercase tracking-wider py-2">
+                  {day}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Calendar grid */}
-        <div className="grid grid-cols-7 gap-2">
-          {days.map((date, index) => {
-            const dateBookings = getBookingsForDate(date);
-            const hasBookings = dateBookings.length > 0;
+            {/* Calendar grid */}
+            <div className="grid grid-cols-7 gap-1 md:gap-2">
+              {days.map((date, index) => {
+                const dateBookings = getBookingsForDate(date);
+                const hasBookings = dateBookings.length > 0;
 
-            return (
-              <motion.div
-                key={index}
-                whileHover={date ? { scale: 1.02 } : {}}
-                onClick={() => handleDateClick(date)}
-                className={`
-                  min-h-[120px] p-3 rounded-xl border transition-all cursor-pointer relative
+                return (
+                  <motion.div
+                    key={index}
+                    whileHover={date ? { scale: 1.02 } : {}}
+                    onClick={() => handleDateClick(date)}
+                    className={`
+                  min-h-[85px] p-2 rounded-xl border transition-all cursor-pointer relative
                   ${!date ? 'bg-transparent border-transparent cursor-default' : ''}
                   ${date && !hasBookings ? 'bg-bg-secondary border-border-color hover:border-purple-500/50 hover:shadow-md' : ''}
                   ${date && hasBookings ? 'bg-purple-50/50 dark:bg-purple-900/5 border-purple-200/50 dark:border-purple-800/50 hover:border-purple-500' : ''}
                   ${isToday(date) ? 'ring-2 ring-purple-500 ring-offset-2 dark:ring-offset-bg-primary' : ''}
                 `}
-              >
-                {date && (
-                  <>
-                    <div className={`text-sm font-bold mb-2 ${isToday(date) ? 'text-purple-600 dark:text-purple-400' : 'text-text-primary'}`}>
-                      {date.getDate()}
-                    </div>
+                  >
+                    {date && (
+                      <>
+                        <div className={`text-xs font-bold mb-1 ${isToday(date) ? 'text-purple-600 dark:text-purple-400' : 'text-text-primary'}`}>
+                          {date.getDate()}
+                        </div>
 
-                    <div className="space-y-1">
-                      {dateBookings.map(booking => {
-                        const isStart = isCheckInDate(date, booking);
-                        const isEnd = isCheckOutDate(date, booking);
+                        <div className="space-y-1">
+                          {dateBookings.map(booking => {
+                            const isStart = isCheckInDate(date, booking);
+                            const isEnd = isCheckOutDate(date, booking);
 
-                        return (
-                          <motion.div
-                            key={booking.id}
-                            whileHover={{ scale: 1.02 }}
-                            onClick={(e) => handleBookingClick(booking, e)}
-                            className={`
-                              text-xs px-2 py-1.5 cursor-pointer transition-all
+                            return (
+                              <motion.div
+                                key={booking.id}
+                                whileHover={{ scale: 1.02 }}
+                                onClick={(e) => handleBookingClick(booking, e)}
+                                className={`
+                              text-[10px] px-1.5 py-0.5 cursor-pointer transition-all
                               ${isStart ? 'rounded-l-lg' : ''}
                               ${isEnd ? 'rounded-r-lg' : ''}
                               ${!isStart && !isEnd ? '' : ''}
                               ${booking.status === 'confirmed'
-                                ? 'bg-green-500 text-white hover:bg-green-600'
-                                : 'bg-yellow-500 text-white hover:bg-yellow-600'
-                              }
+                                    ? 'bg-green-500 text-white hover:bg-green-600'
+                                    : 'bg-yellow-500 text-white hover:bg-yellow-600'
+                                  }
                             `}
-                          >
-                            {isStart && (
-                              <div className="font-semibold truncate flex items-center gap-1">
-                                <Clock size={10} />
-                                {booking.guestName}
-                              </div>
-                            )}
-                            {!isStart && (
-                              <div className="h-4" />
-                            )}
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
-              </motion.div>
-            );
-          })}
+                              >
+                                {isStart && (
+                                  <div className="font-semibold truncate flex items-center gap-1">
+                                    <Clock size={10} />
+                                    {booking.guestName}
+                                  </div>
+                                )}
+                                {!isStart && (
+                                  <div className="h-3" />
+                                )}
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -402,12 +433,12 @@ export default function BookingCalendar() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-bg-secondary rounded-2xl w-full max-w-3xl border border-border-color shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="bg-bg-secondary rounded-2xl w-full max-w-3xl border border-border-color shadow-2xl"
             >
-              <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-purple-500 px-8 py-6 flex justify-between items-center rounded-t-2xl">
+              <div className="sticky top-0 bg-bg-secondary border-b border-border-color px-8 py-6 flex justify-between items-center rounded-t-2xl z-20">
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Add New Booking</h2>
-                  <p className="text-purple-100 text-sm mt-1">
+                  <h2 className="text-xl font-bold text-text-primary">Add New Booking</h2>
+                  <p className="text-text-secondary text-xs mt-0.5">
                     {selectedDate && selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                   </p>
                 </div>
@@ -416,156 +447,301 @@ export default function BookingCalendar() {
                     setShowAddModal(false);
                     resetForm();
                   }}
-                  className="w-10 h-10 rounded-xl bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
+                  className="w-10 h-10 rounded-xl border border-border-color bg-bg-primary text-text-secondary flex items-center justify-center hover:border-red-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
                 >
                   <X size={20} />
                 </button>
               </div>
 
+              <div className="bg-bg-secondary p-3 flex gap-4 border-b border-border-color sticky top-[88px] z-10 overflow-x-auto no-scrollbar">
+                {[
+                  { id: 'guest', label: 'Guest Details' },
+                  { id: 'room', label: 'Room Selection' },
+                  { id: 'payment', label: 'Payment Details' },
+                  { id: 'cform', label: 'C-Form' }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${activeTab === tab.id
+                      ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30'
+                      : 'text-text-secondary hover:bg-bg-primary'
+                      }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
               <form onSubmit={handleSubmit} className="p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Guest Name *</label>
-                    <input
-                      type="text"
-                      value={formData.guestName}
-                      onChange={(e) => setFormData({ ...formData, guestName: e.target.value })}
-                      required
-                      className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                      placeholder="John Doe"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Email *</label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
-                      className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                      placeholder="john@example.com"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Phone *</label>
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      required
-                      className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                      placeholder="+1 234 567 8900"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Room Type *</label>
-                    <select
-                      value={formData.roomType}
-                      onChange={(e) => setFormData({ ...formData, roomType: e.target.value })}
-                      required
-                      className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all cursor-pointer"
+                <div className="min-h-[250px]">
+                  {activeTab === 'guest' && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="grid grid-cols-1 md:grid-cols-2 gap-4"
                     >
-                      <option value="">Select Room Type</option>
-                      <option value="Standard Room">Standard Room</option>
-                      <option value="Deluxe Room">Deluxe Room</option>
-                      <option value="Suite">Suite</option>
-                      <option value="Deluxe Suite">Deluxe Suite</option>
-                    </select>
-                  </div>
+                      <div className="md:col-span-2">
+                        <h3 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
+                          <User size={18} className="text-purple-600" />
+                          Guest Details
+                        </h3>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Guest Name *</label>
+                        <input
+                          type="text"
+                          value={formData.guestName}
+                          onChange={(e) => setFormData({ ...formData, guestName: e.target.value })}
+                          required
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                          placeholder="Full Name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Mobile Number *</label>
+                        <input
+                          type="tel"
+                          value={formData.mobileNumber}
+                          onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })}
+                          required
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                          placeholder="Phone Number"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Email Address</label>
+                        <input
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                          placeholder="Email (Optional)"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
 
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Room Number *</label>
-                    <input
-                      type="text"
-                      value={formData.roomNumber}
-                      onChange={(e) => setFormData({ ...formData, roomNumber: e.target.value })}
-                      required
-                      className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                      placeholder="101"
-                    />
-                  </div>
+                  {activeTab === 'room' && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    >
+                      <div className="md:col-span-2">
+                        <h3 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
+                          <Bed size={18} className="text-purple-600" />
+                          Room Selection
+                        </h3>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Check-in Date *</label>
+                        <input
+                          type="date"
+                          value={formData.checkIn}
+                          onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })}
+                          required
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Check-out Date *</label>
+                        <input
+                          type="date"
+                          value={formData.checkOut}
+                          onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })}
+                          required
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Room Type *</label>
+                        <select
+                          value={formData.roomType}
+                          onChange={(e) => setFormData({ ...formData, roomType: e.target.value })}
+                          required
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm appearance-none cursor-pointer"
+                        >
+                          <option value="">Select room type</option>
+                          <option value="Standard Room">Standard Room</option>
+                          <option value="Deluxe Room">Deluxe Room</option>
+                          <option value="Suite">Suite</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Number of Rooms *</label>
+                        <input
+                          type="number"
+                          value={formData.numRooms}
+                          onChange={(e) => setFormData({ ...formData, numRooms: e.target.value })}
+                          required
+                          min="1"
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Number of Guests *</label>
+                        <input
+                          type="number"
+                          value={formData.guests}
+                          onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
+                          required
+                          min="1"
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Booking Source *</label>
+                        <select
+                          value={formData.bookingSource}
+                          onChange={(e) => setFormData({ ...formData, bookingSource: e.target.value })}
+                          required
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm appearance-none cursor-pointer"
+                        >
+                          <option value="">Select source</option>
+                          <option value="Direct">Direct</option>
+                          <option value="OTA">OTA</option>
+                          <option value="Agent">Agent</option>
+                        </select>
+                      </div>
+                    </motion.div>
+                  )}
 
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Number of Guests *</label>
-                    <input
-                      type="number"
-                      value={formData.guests}
-                      onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
-                      required
-                      min="1"
-                      className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                      placeholder="2"
-                    />
-                  </div>
+                  {activeTab === 'payment' && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    >
+                      <div className="md:col-span-2">
+                        <h3 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
+                          <DollarSign size={18} className="text-purple-600" />
+                          Payment Details
+                        </h3>
+                      </div>
+                      <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-xs font-semibold text-text-primary mb-1.5">Total Amount ($) *</label>
+                          <input
+                            type="number"
+                            value={formData.amount}
+                            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                            required
+                            className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                            placeholder="0.00"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-text-primary mb-1.5">Advance Amount ($)</label>
+                          <input
+                            type="number"
+                            value={formData.advanceAmount}
+                            onChange={(e) => setFormData({ ...formData, advanceAmount: e.target.value })}
+                            className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                            placeholder="0.00"
+                          />
+                        </div>
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Special Requests / Notes</label>
+                        <textarea
+                          value={formData.notes}
+                          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                          rows="4"
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm resize-none"
+                          placeholder="Any special requests or notes..."
+                        />
+                      </div>
+                    </motion.div>
+                  )}
 
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Check-in Date *</label>
-                    <input
-                      type="date"
-                      value={formData.checkIn}
-                      onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })}
-                      required
-                      className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Check-out Date *</label>
-                    <input
-                      type="date"
-                      value={formData.checkOut}
-                      onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })}
-                      required
-                      className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Total Amount ($) *</label>
-                    <input
-                      type="number"
-                      value={formData.amount}
-                      onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                      required
-                      min="0"
-                      step="0.01"
-                      className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                      placeholder="250.00"
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Notes (Optional)</label>
-                    <textarea
-                      value={formData.notes}
-                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                      rows="3"
-                      className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
-                      placeholder="Any special requests or notes..."
-                    />
-                  </div>
+                  {activeTab === 'cform' && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    >
+                      <div className="md:col-span-2">
+                        <h3 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
+                          <Edit size={18} className="text-purple-600" />
+                          C-Form Details
+                        </h3>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Passport Number</label>
+                        <input
+                          type="text"
+                          value={formData.passportNumber}
+                          onChange={(e) => setFormData({ ...formData, passportNumber: e.target.value })}
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Nationality</label>
+                        <input
+                          type="text"
+                          value={formData.nationality}
+                          onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Visa Number</label>
+                        <input
+                          type="text"
+                          value={formData.visaNumber}
+                          onChange={(e) => setFormData({ ...formData, visaNumber: e.target.value })}
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Purpose of Visit</label>
+                        <input
+                          type="text"
+                          value={formData.purposeOfVisit}
+                          onChange={(e) => setFormData({ ...formData, purposeOfVisit: e.target.value })}
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
 
-                <div className="flex gap-3 mt-8 pt-6 border-t border-border-color">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowAddModal(false);
-                      resetForm();
-                    }}
-                    className="flex-1 px-6 py-3 bg-bg-primary border border-border-color rounded-xl text-text-secondary font-medium hover:bg-bg-secondary transition-all"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30"
-                  >
-                    Add Booking
-                  </button>
+                <div className="flex gap-4 mt-8 pt-6 border-t border-border-color">
+                  {activeTab !== 'guest' && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const tabs = ['guest', 'room', 'payment', 'cform'];
+                        const currentIndex = tabs.indexOf(activeTab);
+                        setActiveTab(tabs[currentIndex - 1]);
+                      }}
+                      className="flex-1 px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-secondary font-bold hover:bg-bg-secondary transition-all"
+                    >
+                      Back
+                    </button>
+                  )}
+                  {activeTab !== 'cform' ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const tabs = ['guest', 'room', 'payment', 'cform'];
+                        const currentIndex = tabs.indexOf(activeTab);
+                        setActiveTab(tabs[currentIndex + 1]);
+                      }}
+                      className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-bold hover:from-purple-700 hover:to-purple-600 transition-all"
+                    >
+                      Next
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-bold hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/30"
+                    >
+                      Confirm Booking
+                    </button>
+                  )}
                 </div>
               </form>
             </motion.div>
@@ -590,101 +766,97 @@ export default function BookingCalendar() {
               onClick={(e) => e.stopPropagation()}
               className="bg-bg-secondary rounded-2xl w-full max-w-2xl border border-border-color shadow-2xl"
             >
-              <div className="bg-gradient-to-r from-purple-600 to-purple-500 px-8 py-6 rounded-t-2xl">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h2 className="text-2xl font-bold text-white">Booking Details</h2>
-                    <p className="text-purple-100 text-sm mt-1">ID: #{selectedBooking.id.toString().padStart(4, '0')}</p>
-                  </div>
-                  <button
-                    onClick={() => setSelectedBooking(null)}
-                    className="w-10 h-10 rounded-xl bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
-                  >
-                    <X size={20} />
-                  </button>
+              <div className="bg-bg-secondary border-b border-border-color px-8 py-6 flex justify-between items-center rounded-t-2xl">
+                <div>
+                  <h2 className="text-xl font-bold text-text-primary">Booking Details</h2>
+                  <p className="text-text-secondary text-xs mt-0.5">ID: #{selectedBooking.id.toString().padStart(4, '0')}</p>
                 </div>
+                <button
+                  onClick={() => setSelectedBooking(null)}
+                  className="w-10 h-10 rounded-xl border border-border-color bg-bg-primary text-text-secondary flex items-center justify-center hover:border-red-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                >
+                  <X size={20} />
+                </button>
               </div>
 
               <div className="p-8 space-y-6">
                 {/* Guest Info */}
-                <div className="flex items-center gap-4 p-4 bg-bg-primary rounded-xl">
-                  <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                    <User size={24} />
+                <div className="flex items-center gap-3 p-3 bg-bg-primary rounded-xl">
+                  <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                    <User size={20} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-text-secondary">Guest Name</p>
-                    <p className="text-lg font-bold text-text-primary">{selectedBooking.guestName}</p>
+                    <p className="text-[10px] text-text-secondary uppercase font-bold tracking-wider">Guest Name</p>
+                    <p className="text-base font-bold text-text-primary">{selectedBooking.guestName}</p>
                   </div>
                 </div>
 
                 {/* Contact & Room Info Grid */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-bg-primary rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Mail size={16} className="text-text-secondary" />
-                      <p className="text-xs text-text-secondary">Email</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="p-3 bg-bg-primary rounded-xl">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Mail size={14} className="text-text-secondary" />
+                      <p className="text-[10px] text-text-secondary uppercase font-bold tracking-wider">Email</p>
                     </div>
-                    <p className="text-sm font-medium text-text-primary break-all">{selectedBooking.email}</p>
+                    <p className="text-xs font-medium text-text-primary break-all">{selectedBooking.email}</p>
                   </div>
 
-                  <div className="p-4 bg-bg-primary rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Phone size={16} className="text-text-secondary" />
-                      <p className="text-xs text-text-secondary">Phone</p>
+                  <div className="p-3 bg-bg-primary rounded-xl">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Phone size={14} className="text-text-secondary" />
+                      <p className="text-[10px] text-text-secondary uppercase font-bold tracking-wider">Phone</p>
                     </div>
-                    <p className="text-sm font-medium text-text-primary">{selectedBooking.phone}</p>
+                    <p className="text-xs font-medium text-text-primary">{selectedBooking.phone}</p>
                   </div>
 
-                  <div className="p-4 bg-bg-primary rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Bed size={16} className="text-text-secondary" />
-                      <p className="text-xs text-text-secondary">Room</p>
+                  <div className="p-3 bg-bg-primary rounded-xl">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Bed size={14} className="text-text-secondary" />
+                      <p className="text-[10px] text-text-secondary uppercase font-bold tracking-wider">Room</p>
                     </div>
-                    <p className="text-sm font-medium text-text-primary">{selectedBooking.roomType}</p>
-                    <p className="text-xs text-text-secondary mt-1">Room {selectedBooking.roomNumber}</p>
+                    <p className="text-xs font-medium text-text-primary">{selectedBooking.roomType}</p>
+                    <p className="text-[10px] text-text-secondary mt-0.5">Room {selectedBooking.roomNumber}</p>
                   </div>
 
-                  <div className="p-4 bg-bg-primary rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Users size={16} className="text-text-secondary" />
-                      <p className="text-xs text-text-secondary">Guests</p>
+                  <div className="p-3 bg-bg-primary rounded-xl">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Users size={14} className="text-text-secondary" />
+                      <p className="text-[10px] text-text-secondary uppercase font-bold tracking-wider">Guests</p>
                     </div>
-                    <p className="text-sm font-medium text-text-primary">{selectedBooking.guests} {selectedBooking.guests === 1 ? 'Guest' : 'Guests'}</p>
+                    <p className="text-xs font-medium text-text-primary">{selectedBooking.guests} {selectedBooking.guests === 1 ? 'Guest' : 'Guests'}</p>
                   </div>
 
-                  <div className="p-4 bg-bg-primary rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Calendar size={16} className="text-text-secondary" />
-                      <p className="text-xs text-text-secondary">Check-in</p>
+                  <div className="p-3 bg-bg-primary rounded-xl">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Calendar size={14} className="text-text-secondary" />
+                      <p className="text-[10px] text-text-secondary uppercase font-bold tracking-wider">Check-in</p>
                     </div>
-                    <p className="text-sm font-medium text-text-primary">{new Date(selectedBooking.checkIn).toLocaleDateString()}</p>
+                    <p className="text-xs font-medium text-text-primary">{new Date(selectedBooking.checkIn).toLocaleDateString()}</p>
                   </div>
 
-                  <div className="p-4 bg-bg-primary rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Calendar size={16} className="text-text-secondary" />
-                      <p className="text-xs text-text-secondary">Check-out</p>
+                  <div className="p-3 bg-bg-primary rounded-xl">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Calendar size={14} className="text-text-secondary" />
+                      <p className="text-[10px] text-text-secondary uppercase font-bold tracking-wider">Check-out</p>
                     </div>
-                    <p className="text-sm font-medium text-text-primary">{new Date(selectedBooking.checkOut).toLocaleDateString()}</p>
+                    <p className="text-xs font-medium text-text-primary">{new Date(selectedBooking.checkOut).toLocaleDateString()}</p>
                   </div>
                 </div>
 
-                {/* Notes */}
                 {selectedBooking.notes && (
-                  <div className="p-4 bg-bg-primary rounded-xl">
-                    <p className="text-xs text-text-secondary mb-2">Notes</p>
-                    <p className="text-sm text-text-primary">{selectedBooking.notes}</p>
+                  <div className="p-3 bg-bg-primary rounded-xl">
+                    <p className="text-[10px] text-text-secondary uppercase font-bold tracking-wider mb-1">Notes</p>
+                    <p className="text-xs text-text-primary">{selectedBooking.notes}</p>
                   </div>
                 )}
 
-                {/* Amount */}
-                <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/10 rounded-xl border border-purple-200 dark:border-purple-800">
+                <div className="p-3 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/10 rounded-xl border border-purple-200 dark:border-purple-800">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <DollarSign size={20} className="text-purple-600 dark:text-purple-400" />
-                      <p className="text-sm font-medium text-text-secondary">Total Amount</p>
+                      <DollarSign size={18} className="text-purple-600 dark:text-purple-400" />
+                      <p className="text-xs font-medium text-text-secondary uppercase font-bold tracking-wider">Total Amount</p>
                     </div>
-                    <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">${selectedBooking.amount}</p>
+                    <p className="text-xl font-bold text-purple-600 dark:text-purple-400">${selectedBooking.amount}</p>
                   </div>
                 </div>
 
@@ -692,20 +864,20 @@ export default function BookingCalendar() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => handleUpdateStatus(selectedBooking.id, selectedBooking.status === 'confirmed' ? 'pending' : 'confirmed')}
-                    className={`flex-1 px-4 py-2 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${selectedBooking.status === 'confirmed'
-                        ? 'bg-green-50 text-green-600 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800 hover:bg-green-100'
-                        : 'bg-yellow-50 text-yellow-600 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800 hover:bg-yellow-100'
+                    className={`flex-1 px-4 py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${selectedBooking.status === 'confirmed'
+                      ? 'bg-green-50 text-green-600 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800 hover:bg-green-100'
+                      : 'bg-yellow-50 text-yellow-600 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800 hover:bg-yellow-100'
                       }`}
                   >
-                    <Check size={16} />
+                    <Check size={14} />
                     {selectedBooking.status === 'confirmed' ? 'Confirmed' : 'Mark as Confirmed'}
                   </button>
 
                   <button
                     onClick={() => handleDeleteBooking(selectedBooking.id)}
-                    className="px-4 py-2 rounded-xl bg-red-50 text-red-600 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 font-semibold text-sm hover:bg-red-100 transition-all flex items-center gap-2"
+                    className="px-4 py-2 rounded-xl bg-red-50 text-red-600 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 font-bold text-xs hover:bg-red-100 transition-all flex items-center gap-2"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={14} />
                     Delete
                   </button>
                 </div>

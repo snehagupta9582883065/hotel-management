@@ -13,7 +13,9 @@ import {
 export default function RoomManagement() {
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [editingRoom, setEditingRoom] = useState(null);
+    const [selectedRoom, setSelectedRoom] = useState(null);
     const [filterType, setFilterType] = useState('all');
     const [filterStatus, setFilterStatus] = useState('all');
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
@@ -138,6 +140,11 @@ export default function RoomManagement() {
             amenities: room.amenities
         });
         setIsModalOpen(true);
+    };
+
+    const handleViewDetails = (room) => {
+        setSelectedRoom(room);
+        setIsDetailsModalOpen(true);
     };
 
     const handleDelete = (id) => {
@@ -296,80 +303,100 @@ export default function RoomManagement() {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto rounded-xl border border-border-color">
-                    <table className="w-full border-collapse text-sm">
-                        <thead>
-                            <tr className="bg-bg-primary border-b border-border-color">
-                                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Room Number</th>
-                                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Type</th>
-                                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Floor</th>
-                                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Max Occupancy</th>
-                                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Base Price</th>
-                                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Status</th>
-                                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Amenities</th>
-                                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredRooms.map((room) => (
-                                <tr key={room.id} className="border-b border-border-color hover:bg-purple-500/5 transition-colors">
-                                    <td className="px-5 py-5 text-text-primary font-semibold whitespace-nowrap">{room.roomNumber}</td>
-                                    <td className="px-5 py-5 text-text-primary font-medium whitespace-nowrap">{room.type}</td>
-                                    <td className="px-5 py-5 text-text-primary font-medium whitespace-nowrap">{room.floor}</td>
-                                    <td className="px-5 py-5 text-text-primary font-medium whitespace-nowrap">{room.maxOccupancy}</td>
-                                    <td className="px-5 py-5 text-text-primary font-semibold whitespace-nowrap">${room.basePrice}</td>
-                                    <td className="px-5 py-5 whitespace-nowrap">
-                                        <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg font-semibold text-xs min-w-[90px] ${getStatusClass(room.status)}`}>
-                                            {room.status}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {filteredRooms.map((room) => (
+                        <div
+                            key={room.id}
+                            onClick={() => handleViewDetails(room)}
+                            className="group flex flex-col bg-bg-primary border border-border-color rounded-2xl overflow-hidden hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 cursor-pointer"
+                        >
+                            {/* Card Header */}
+                            <div className="p-5 border-b border-border-color bg-gradient-to-br from-bg-primary to-bg-secondary group-hover:from-purple-500/5 group-hover:to-purple-500/10 transition-colors">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div>
+                                        <span className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1 block">
+                                            {room.type}
                                         </span>
-                                    </td>
-                                    <td className="px-5 py-5 whitespace-nowrap">
-                                        <div className="flex gap-1.5">
-                                            {room.amenities.slice(0, 2).map((amenity, idx) => (
-                                                <span key={idx} className="px-2 py-1 bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 text-xs rounded-md font-medium">
-                                                    {amenity}
-                                                </span>
-                                            ))}
-                                            {room.amenities.length > 2 && (
-                                                <span className="px-2 py-1 bg-gray-50 text-gray-600 dark:bg-gray-900/20 dark:text-gray-400 text-xs rounded-md font-medium">
-                                                    +{room.amenities.length - 2}
-                                                </span>
-                                            )}
+                                        <h3 className="text-xl font-bold text-text-primary">
+                                            Room {room.roomNumber}
+                                        </h3>
+                                    </div>
+                                    <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full font-bold text-[10px] uppercase tracking-tighter ${getStatusClass(room.status)}`}>
+                                        {room.status}
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center gap-4 text-xs font-medium text-text-secondary">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                                        Floor {room.floor}
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                                        Up to {room.maxOccupancy} Guests
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Card Body */}
+                            <div className="p-5 flex-1 flex flex-col gap-5">
+                                <div>
+                                    <label className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-2 block">Available Amenities</label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {room.amenities.map((amenity, idx) => (
+                                            <span key={idx} className="px-2.5 py-1 bg-bg-secondary text-text-primary border border-border-color text-[10px] rounded-lg font-bold group-hover:border-purple-500/30 transition-colors">
+                                                {amenity}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="mt-auto pt-4 border-t border-border-color/50 flex items-end justify-between">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-1 block">Base Price</label>
+                                        <div className="flex items-baseline gap-1">
+                                            <span className="text-2xl font-black text-purple-600 dark:text-purple-400">${room.basePrice}</span>
+                                            <span className="text-xs font-medium text-text-secondary">/night</span>
                                         </div>
-                                    </td>
-                                    <td className="px-5 py-5 whitespace-nowrap">
-                                        <div className="flex gap-2">
-                                            <button
-                                                className="w-8 h-8 rounded-lg border border-border-color bg-bg-primary text-text-secondary flex items-center justify-center cursor-pointer hover:border-purple-500 hover:text-purple-500 hover:bg-purple-500/5 hover:-translate-y-0.5 transition-all"
-                                                title="Edit"
-                                                onClick={() => handleEdit(room)}
-                                            >
-                                                <Edit size={16} />
-                                            </button>
-                                            <button
-                                                className="w-8 h-8 rounded-lg border border-red-500/30 bg-bg-primary text-red-500 flex items-center justify-center cursor-pointer hover:border-red-500 hover:bg-red-500/10 hover:-translate-y-0.5 transition-all"
-                                                title="Delete"
-                                                onClick={() => handleDelete(room.id)}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            className="w-9 h-9 rounded-xl border border-border-color bg-bg-secondary text-text-secondary flex items-center justify-center cursor-pointer hover:border-purple-500 hover:text-purple-500 hover:bg-purple-500/5 hover:-translate-y-1 transition-all duration-300"
+                                            title="Edit"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleEdit(room);
+                                            }}
+                                        >
+                                            <Edit size={16} />
+                                        </button>
+                                        <button
+                                            className="w-9 h-9 rounded-xl border border-red-500/20 bg-bg-secondary text-red-500 flex items-center justify-center cursor-pointer hover:border-red-500 hover:bg-red-500/10 hover:-translate-y-1 transition-all duration-300"
+                                            title="Delete"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDelete(room.id);
+                                            }}
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 
             {/* Add/Edit Room Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-                    <div className="bg-bg-secondary rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-border-color shadow-2xl">
+                    <div className="bg-bg-secondary rounded-2xl w-full max-w-3xl border border-border-color shadow-2xl">
                         <div className="sticky top-0 bg-bg-secondary border-b border-border-color px-8 py-6 flex justify-between items-center">
                             <div>
-                                <h2 className="text-2xl font-bold text-text-primary">{editingRoom ? 'Edit Room' : 'Add New Room'}</h2>
-                                <p className="text-sm text-text-secondary mt-1">{editingRoom ? 'Update room details' : 'Fill in the room information'}</p>
+                                <h2 className="text-xl font-bold text-text-primary">{editingRoom ? 'Edit Room' : 'Add New Room'}</h2>
+                                <p className="text-xs text-text-secondary mt-0.5">{editingRoom ? 'Update room details' : 'Fill in the room information'}</p>
                             </div>
                             <button
                                 onClick={handleCancel}
@@ -380,28 +407,28 @@ export default function RoomManagement() {
                         </div>
 
                         <form onSubmit={handleSubmit} className="p-8">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <label className="block text-sm font-semibold text-text-primary mb-2">Room Number</label>
+                                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Room Number</label>
                                     <input
                                         type="text"
                                         name="roomNumber"
                                         value={formData.roomNumber}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                                        className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
                                         placeholder="e.g., 101"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-text-primary mb-2">Room Type</label>
+                                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Room Type</label>
                                     <select
                                         name="roomType"
                                         value={formData.roomType}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all cursor-pointer"
+                                        className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm cursor-pointer"
                                     >
                                         <option value="">Select Type</option>
                                         {roomTypes.map(type => (
@@ -411,52 +438,52 @@ export default function RoomManagement() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-text-primary mb-2">Floor</label>
+                                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Floor</label>
                                     <input
                                         type="number"
                                         name="floor"
                                         value={formData.floor}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                                        className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
                                         placeholder="e.g., 1"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-text-primary mb-2">Max Occupancy</label>
+                                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Max Occupancy</label>
                                     <input
                                         type="number"
                                         name="maxOccupancy"
                                         value={formData.maxOccupancy}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                                        className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
                                         placeholder="e.g., 2"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-text-primary mb-2">Base Price ($)</label>
+                                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Base Price ($)</label>
                                     <input
                                         type="number"
                                         name="basePrice"
                                         value={formData.basePrice}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                                        className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
                                         placeholder="e.g., 150"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-text-primary mb-2">Status</label>
+                                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Status</label>
                                     <select
                                         name="status"
                                         value={formData.status}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all cursor-pointer"
+                                        className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm cursor-pointer"
                                     >
                                         {statusOptions.map(status => (
                                             <option key={status} value={status}>{status}</option>
@@ -465,45 +492,125 @@ export default function RoomManagement() {
                                 </div>
                             </div>
 
-                            <div className="mt-6">
-                                <label className="block text-sm font-semibold text-text-primary mb-3">Amenities</label>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div className="mt-4">
+                                <label className="block text-xs font-semibold text-text-primary mb-2">Amenities</label>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                                     {amenitiesList.map(amenity => (
                                         <label
                                             key={amenity}
-                                            className={`flex items-center gap-2 px-4 py-3 rounded-xl border cursor-pointer transition-all ${formData.amenities.includes(amenity)
-                                                    ? 'bg-purple-50 border-purple-500 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400'
-                                                    : 'bg-bg-primary border-border-color text-text-secondary hover:border-purple-300'
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all ${formData.amenities.includes(amenity)
+                                                ? 'bg-purple-50 border-purple-500 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400'
+                                                : 'bg-bg-primary border-border-color text-text-secondary hover:border-purple-300'
                                                 }`}
                                         >
                                             <input
                                                 type="checkbox"
                                                 checked={formData.amenities.includes(amenity)}
                                                 onChange={() => handleAmenityToggle(amenity)}
-                                                className="w-4 h-4 accent-purple-600"
+                                                className="w-3.5 h-3.5 accent-purple-600"
                                             />
-                                            <span className="text-sm font-medium">{amenity}</span>
+                                            <span className="text-xs font-medium">{amenity}</span>
                                         </label>
                                     ))}
                                 </div>
                             </div>
 
-                            <div className="flex gap-3 mt-8 pt-6 border-t border-border-color">
+                            <div className="flex gap-3 mt-6 pt-4 border-t border-border-color">
                                 <button
                                     type="button"
                                     onClick={handleCancel}
-                                    className="flex-1 px-6 py-3 bg-bg-primary border border-border-color rounded-xl text-text-secondary font-medium hover:bg-bg-secondary hover:border-border-color transition-all"
+                                    className="flex-1 px-4 py-2 bg-bg-primary border border-border-color rounded-lg text-text-secondary font-medium hover:bg-bg-secondary transition-all text-sm"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30"
+                                    className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-lg font-medium hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5"
                                 >
                                     {editingRoom ? 'Update Room' : 'Add Room'}
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+            {/* Room Details Popup */}
+            {isDetailsModalOpen && selectedRoom && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+                    <div className="bg-bg-secondary rounded-2xl w-full max-w-lg border border-border-color shadow-2xl overflow-hidden">
+                        {/* Header */}
+                        <div className="sticky top-0 bg-bg-secondary border-b border-border-color px-8 py-5 flex justify-between items-center">
+                            <div>
+                                <h2 className="text-xl font-bold text-text-primary">Room Details</h2>
+                                <p className="text-xs text-text-secondary mt-0.5">Viewing {selectedRoom.type} #{selectedRoom.roomNumber}</p>
+                            </div>
+                            <button
+                                onClick={() => setIsDetailsModalOpen(false)}
+                                className="w-10 h-10 rounded-xl border border-border-color bg-bg-primary text-text-secondary flex items-center justify-center hover:border-red-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="p-8">
+                            <div className="grid grid-cols-2 gap-6 mb-8">
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold text-text-secondary uppercase tracking-widest block">Status</label>
+                                    <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-lg font-bold text-xs uppercase tracking-tight ${getStatusClass(selectedRoom.status)}`}>
+                                        {selectedRoom.status}
+                                    </span>
+                                </div>
+                                <div className="space-y-1.5 text-right">
+                                    <label className="text-[10px] font-bold text-text-secondary uppercase tracking-widest block">Price per Night</label>
+                                    <div className="flex items-baseline justify-end gap-1">
+                                        <span className="text-2xl font-black text-purple-600 dark:text-purple-400">${selectedRoom.basePrice}</span>
+                                        <span className="text-xs font-medium text-text-secondary">USD</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4 mb-8">
+                                <div className="bg-bg-primary p-4 rounded-xl border border-border-color flex flex-col items-center">
+                                    <span className="text-text-secondary text-[10px] font-bold uppercase mb-1">Floor</span>
+                                    <span className="text-lg font-bold text-text-primary">{selectedRoom.floor}</span>
+                                </div>
+                                <div className="bg-bg-primary p-4 rounded-xl border border-border-color flex flex-col items-center">
+                                    <span className="text-text-secondary text-[10px] font-bold uppercase mb-1">Occupancy</span>
+                                    <span className="text-lg font-bold text-text-primary">{selectedRoom.maxOccupancy} Persons</span>
+                                </div>
+                            </div>
+
+                            <div className="mb-8">
+                                <label className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-3 block">Amenities</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {selectedRoom.amenities.map((amenity, idx) => (
+                                        <div key={idx} className="flex items-center gap-2 px-3 py-1.5 bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-800/30 rounded-lg">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                                            <span className="text-xs font-semibold text-purple-700 dark:text-purple-300">{amenity}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="flex gap-4 pt-4 border-t border-border-color">
+                                <button
+                                    onClick={() => {
+                                        setIsDetailsModalOpen(false);
+                                        handleEdit(selectedRoom);
+                                    }}
+                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-bold hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5"
+                                >
+                                    <Edit size={18} />
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={() => setIsDetailsModalOpen(false)}
+                                    className="flex-1 px-6 py-3 bg-bg-primary border border-border-color text-text-secondary rounded-xl font-bold hover:bg-bg-secondary transition-all"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

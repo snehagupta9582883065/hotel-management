@@ -364,83 +364,83 @@ export default function FloorManagement() {
                     <div className="bg-bg-secondary rounded-2xl w-full max-w-2xl border border-border-color shadow-2xl">
                         <div className="bg-bg-secondary border-b border-border-color px-8 py-6 flex justify-between items-center rounded-t-2xl">
                             <div>
-                                <h2 className="text-2xl font-bold text-text-primary">{editingFloor ? 'Edit Floor' : 'Add New Floor'}</h2>
-                                <p className="text-sm text-text-secondary mt-1">{editingFloor ? 'Update floor details' : 'Fill in the floor information'}</p>
+                                <h2 className="text-xl font-bold text-text-primary">{editingFloor ? 'Edit Floor' : 'Add New Floor'}</h2>
+                                <p className="text-xs text-text-secondary mt-0.5">{editingFloor ? 'Update floor details' : 'Fill in the floor information'}</p>
                             </div>
                             <button
                                 onClick={handleCancel}
-                                className="w-10 h-10 rounded-xl border border-border-color bg-bg-primary text-text-secondary flex items-center justify-center hover:border-red-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                                className="w-8 h-8 rounded-lg border border-border-color bg-bg-primary text-text-secondary flex items-center justify-center hover:border-red-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
                             >
-                                <X size={20} />
+                                <X size={16} />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-8">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <form onSubmit={handleSubmit} className="p-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-semibold text-text-primary mb-2">Floor Number</label>
+                                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Floor Number</label>
                                     <input
                                         type="text"
                                         name="floorNumber"
                                         value={formData.floorNumber}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                                        className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
                                         placeholder="e.g., G, 1, 2"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-text-primary mb-2">Floor Name</label>
+                                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Floor Name</label>
                                     <input
                                         type="text"
                                         name="floorName"
                                         value={formData.floorName}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                                        className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
                                         placeholder="e.g., Ground Floor"
                                     />
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-text-primary mb-2">Description</label>
+                                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Description</label>
                                     <textarea
                                         name="description"
                                         value={formData.description}
                                         onChange={handleInputChange}
                                         required
-                                        rows="3"
-                                        className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
+                                        rows="2"
+                                        className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm resize-none"
                                         placeholder="Brief description of the floor"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-text-primary mb-2">Total Rooms</label>
+                                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Total Rooms</label>
                                     <input
                                         type="number"
                                         name="totalRooms"
                                         value={formData.totalRooms}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                                        className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
                                         placeholder="e.g., 10"
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex gap-3 mt-8 pt-6 border-t border-border-color">
+                            <div className="flex gap-3 mt-6 pt-4 border-t border-border-color">
                                 <button
                                     type="button"
                                     onClick={handleCancel}
-                                    className="flex-1 px-6 py-3 bg-bg-primary border border-border-color rounded-xl text-text-secondary font-medium hover:bg-bg-secondary transition-all"
+                                    className="flex-1 px-4 py-2 bg-bg-primary border border-border-color rounded-lg text-text-secondary font-medium hover:bg-bg-secondary transition-all text-sm"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30"
+                                    className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-lg font-medium hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5"
                                 >
                                     {editingFloor ? 'Update Floor' : 'Add Floor'}
                                 </button>

@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={outfit.className}>
+      <body className={outfit.className} suppressHydrationWarning>
         <Providers>
           <div className="layout-container">
             <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
