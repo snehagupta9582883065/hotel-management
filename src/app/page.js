@@ -1,35 +1,16 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   TrendingUp, Users, CalendarCheck, DollarSign,
   ArrowUpRight, LogIn, LogOut,
-  Bed, FileText, Plus, Search, AlertCircle, ChevronRight
+  Bed, FileText, Plus, TrendingDown
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-// Mock Data
-const revenueData = [
-  { name: 'Jan 3', revenue: 4000, bookings: 24 },
-  { name: 'Jan 4', revenue: 5000, bookings: 28 },
-  { name: 'Jan 5', revenue: 4500, bookings: 25 },
-  { name: 'Jan 6', revenue: 6000, bookings: 35 },
-  { name: 'Jan 7', revenue: 5500, bookings: 30 },
-  { name: 'Jan 8', revenue: 7000, bookings: 42 },
-  { name: 'Jan 9', revenue: 6500, bookings: 38 },
-];
-
-const rooms = [
-  { id: '101', type: 'Standard', status: 'occupied', guest: 'John Doe' },
-  { id: '102', type: 'Standard', status: 'available', guest: '-' },
-  { id: '103', type: 'Deluxe', status: 'occupied', guest: 'Jane Smith' },
-  { id: '104', type: 'Standard', status: 'cleaning', guest: '-' },
-  { id: '201', type: 'Suite', status: 'occupied', guest: 'Bob Wilson' },
-  { id: '202', type: 'Suite', status: 'available', guest: '-' },
-  { id: '203', type: 'Deluxe', status: 'maintenance', guest: '-' },
-  { id: '204', type: 'Standard', status: 'available', guest: '-' },
-];
+// API CONSTANTS
+const API_URL = "http://localhost:3000/api/dashboard"; // Replace with your actual API URL
 
 // Animation Variants
 const containerVariant = {
@@ -48,11 +29,11 @@ const itemVariant = {
 };
 
 // Components
-const StatCard = ({ title, value, icon: Icon, trend, subtext }) => (
+const StatCard = ({ title, value, icon: Icon, trend, subtext, className = "" }) => (
   <motion.div
     variants={itemVariant}
     whileHover={{ y: -4 }}
-    className="bg-bg-secondary rounded-2xl p-4 md:p-6 border border-border-color hover:border-purple-500/30 hover:shadow-lg transition-all duration-300"
+    className={`bg-bg-secondary rounded-2xl p-4 md:p-6 border border-border-color hover:border-purple-500/30 hover:shadow-lg transition-all duration-300 ${className}`}
   >
     <div className="flex items-start justify-between gap-2 mb-4 md:mb-6">
       <div className="flex-1 min-w-0">
@@ -84,23 +65,25 @@ const StatCard = ({ title, value, icon: Icon, trend, subtext }) => (
   </motion.div>
 );
 
-const QuickLink = ({ icon: Icon, label }) => (
-  <motion.div
-    variants={itemVariant}
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-    className="bg-bg-secondary rounded-2xl p-6 border border-border-color hover:border-purple-500 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-3 group"
-  >
-    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/10 to-purple-600/10 backdrop-blur-sm border border-purple-500/20 flex items-center justify-center text-purple-600 group-hover:from-purple-500/20 group-hover:to-purple-600/20 transition-all">
-      <Icon size={24} />
-    </div>
-    <span className="text-sm font-semibold text-text-primary">{label}</span>
-  </motion.div>
+const QuickLink = ({ icon: Icon, label, href }) => (
+  <Link href={href} className="block w-full h-full">
+    <motion.div
+      variants={itemVariant}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className="bg-bg-secondary rounded-2xl p-6 border border-border-color hover:border-purple-500 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-3 group h-full"
+    >
+      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/10 to-purple-600/10 backdrop-blur-sm border border-purple-500/20 flex items-center justify-center text-purple-600 group-hover:from-purple-500/20 group-hover:to-purple-600/20 transition-all">
+        <Icon size={24} />
+      </div>
+      <span className="text-sm font-semibold text-text-primary text-center">{label}</span>
+    </motion.div>
+  </Link>
 );
 
 const RoomStatusCard = ({ room }) => {
   const getStatusConfig = (status) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'available':
         return {
           bg: 'bg-green-50 dark:bg-green-900/20',
@@ -149,16 +132,16 @@ const RoomStatusCard = ({ room }) => {
     >
       {/* Room Number */}
       <div className="text-center mb-4">
-        <h4 className="text-2xl font-bold text-text-primary">{room.id}</h4>
-        <p className="text-xs text-text-secondary mt-1">{room.type}</p>
+        <h4 className="text-2xl font-bold text-text-primary">{room.room_number || room.id}</h4>
+        <p className="text-xs text-text-secondary mt-1">{room.room_type || room.type}</p>
       </div>
 
       {/* Guest Info */}
       <div className="mb-4 min-h-[20px] text-center">
-        {room.guest !== '-' ? (
+        {room.current_guest ? (
           <div className="flex items-center justify-center gap-1.5">
             <Users size={14} className="text-text-secondary" />
-            <span className="text-sm text-text-primary truncate max-w-[120px]">{room.guest}</span>
+            <span className="text-sm text-text-primary truncate max-w-[120px]">{room.current_guest.name}</span>
           </div>
         ) : (
           <span className="text-xs text-text-secondary/50">—</span>
@@ -177,6 +160,107 @@ const RoomStatusCard = ({ room }) => {
 };
 
 export default function Dashboard() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Initialize data - simulates fetching from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // In a real scenario, uncomment the line below:
+        // const response = await fetch(API_URL);
+        // const result = await response.json();
+
+        // Simulating API response with the mock structure we defined
+        const mockResponse = {
+          "status": "success",
+          "data": {
+            "kpi_stats": {
+              "today_revenue": {
+                "value": 6800,
+                "currency": "USD",
+                "trend_percentage": 8.5,
+                "trend_direction": "up"
+              },
+              "occupied_rooms": {
+                "value": 32,
+                "total": 50,
+                "percentage": 64,
+                "trend_percentage": 12.0,
+                "trend_direction": "up"
+              },
+              "total_rooms": {
+                "value": 50
+              },
+              "available_rooms": {
+                "value": 15
+              },
+              "check_ins": {
+                "today_total": 5,
+                "pending": 2,
+                "completed": 3
+              },
+              "check_outs": {
+                "today_total": 3,
+                "pending": 1,
+                "completed": 2
+              }
+            },
+            "revenue_chart_data": [
+              { "date": "Jan 3", "revenue": 4000, "bookings_count": 24 },
+              { "date": "Jan 4", "revenue": 5000, "bookings_count": 28 },
+              { "date": "Jan 5", "revenue": 4500, "bookings_count": 25 },
+              { "date": "Jan 6", "revenue": 6000, "bookings_count": 35 },
+              { "date": "Jan 7", "revenue": 5500, "bookings_count": 30 },
+              { "date": "Jan 8", "revenue": 7000, "bookings_count": 42 },
+              { "date": "Jan 9", "revenue": 6500, "bookings_count": 38 }
+            ],
+            "room_status_overview": [
+              { "room_id": 101, "room_number": "101", "room_type": "Standard", "status": "occupied", "current_guest": { "guest_id": "G001", "name": "John Doe" } },
+              { "room_id": 102, "room_number": "102", "room_type": "Standard", "status": "available", "current_guest": null },
+              { "room_id": 103, "room_number": "103", "room_type": "Deluxe", "status": "occupied", "current_guest": { "guest_id": "G002", "name": "Jane Smith" } },
+              { "room_id": 104, "room_number": "104", "room_type": "Standard", "status": "cleaning", "current_guest": null },
+              { "room_id": 201, "room_number": "201", "room_type": "Suite", "status": "occupied", "current_guest": { "guest_id": "G003", "name": "Bob Wilson" } },
+              { "room_id": 202, "room_number": "202", "room_type": "Suite", "status": "available", "current_guest": null },
+              { "room_id": 203, "room_number": "203", "room_type": "Deluxe", "status": "maintenance", "current_guest": null },
+              { "room_id": 204, "room_number": "204", "room_type": "Standard", "status": "available", "current_guest": null }
+            ],
+            "occupancy_breakdown": {
+              "available": 15,
+              "occupied": 32,
+              "cleaning": 2,
+              "maintenance": 1
+            }
+          }
+        };
+
+        // Simulate network delay
+        setTimeout(() => {
+          setData(mockResponse.data);
+          setLoading(false);
+        }, 500);
+
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+
+  if (!data) return null;
+
+  const { kpi_stats, revenue_chart_data, room_status_overview, occupancy_breakdown } = data;
+
   return (
     <motion.div
       initial="hidden"
@@ -184,14 +268,30 @@ export default function Dashboard() {
       variants={containerVariant}
       className="flex flex-col gap-6 md:gap-8 pb-10"
     >
-      {/* Top Stats Row */}
-      <motion.div variants={containerVariant} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6">
-        <StatCard title="Total Rooms" value="50" icon={Bed} subtext="Across all floors" />
-        <StatCard title="Available Rooms" value="15" icon={Bed} subtext="Ready for booking" />
-        <StatCard title="Occupied Rooms" value="32" icon={Users} trend={12} />
-        <StatCard title="Today's Revenue" value="$6,800" icon={DollarSign} trend={8.5} />
-        <StatCard title="Today's Check-ins" value="5" icon={LogIn} subtext="Expected arrivals" />
-        <StatCard title="Today's Check-outs" value="3" icon={LogOut} subtext="Expected departures" />
+      {/* Top Stats Row - Bento Grid Layout */}
+      <motion.div variants={containerVariant} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Row 1: Key Metrics (Tall/Wide) */}
+        <StatCard
+          title="Today's Revenue"
+          value={`$${kpi_stats.today_revenue.value.toLocaleString()}`}
+          icon={DollarSign}
+          trend={kpi_stats.today_revenue.trend_percentage}
+          className="md:col-span-2"
+        />
+        <StatCard
+          title="Occupied Rooms"
+          value={kpi_stats.occupied_rooms.value}
+          icon={Users}
+          trend={kpi_stats.occupied_rooms.trend_percentage}
+          subtext={`${kpi_stats.occupied_rooms.value}/${kpi_stats.occupied_rooms.total}`}
+          className="md:col-span-2"
+        />
+
+        {/* Row 2: Secondary Metrics (Square) */}
+        <StatCard title="Total Rooms" value={kpi_stats.total_rooms.value} icon={Bed} subtext="Across all floors" />
+        <StatCard title="Available Rooms" value={kpi_stats.available_rooms.value} icon={Bed} subtext="Ready for booking" />
+        <StatCard title="Today's Check-ins" value={kpi_stats.check_ins.today_total} icon={LogIn} subtext={`${kpi_stats.check_ins.pending} pending`} />
+        <StatCard title="Today's Check-outs" value={kpi_stats.check_outs.today_total} icon={LogOut} subtext={`${kpi_stats.check_outs.pending} pending`} />
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -208,7 +308,7 @@ export default function Dashboard() {
           </div>
           <div className="h-[250px] sm:h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData}>
+              <AreaChart data={revenue_chart_data}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
@@ -220,14 +320,14 @@ export default function Dashboard() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
-                <XAxis dataKey="name" stroke="var(--text-secondary)" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="date" stroke="var(--text-secondary)" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis stroke="var(--text-secondary)" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(val) => `$${val}`} />
                 <Tooltip
                   contentStyle={{ backgroundColor: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                   itemStyle={{ color: 'var(--text-primary)' }}
                 />
                 <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
-                <Area type="monotone" dataKey="bookings" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorBookings)" />
+                <Area type="monotone" dataKey="bookings_count" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorBookings)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -248,12 +348,12 @@ export default function Dashboard() {
           <div className="mb-6">
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm font-medium text-text-secondary">Occupancy Rate</span>
-              <span className="text-text-primary font-bold">64%</span>
+              <span className="text-text-primary font-bold">{kpi_stats.occupied_rooms.percentage}%</span>
             </div>
             <div className="w-full h-3 bg-bg-primary rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: '64%' }}
+                animate={{ width: `${kpi_stats.occupied_rooms.percentage}%` }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
                 className="h-full bg-gradient-to-r from-purple-600 to-purple-400 rounded-full shadow-lg shadow-purple-500/40"
               />
@@ -263,19 +363,19 @@ export default function Dashboard() {
           <div className="grid grid-cols-2 gap-2 md:gap-3">
             <motion.div whileHover={{ scale: 1.02 }} className="bg-green-50 dark:bg-green-900/10 rounded-xl p-4 border border-green-200 dark:border-green-800">
               <span className="text-xs font-medium text-text-secondary block mb-1">Available</span>
-              <span className="text-2xl font-bold text-green-600">15</span>
+              <span className="text-2xl font-bold text-green-600">{occupancy_breakdown.available}</span>
             </motion.div>
             <motion.div whileHover={{ scale: 1.02 }} className="bg-blue-50 dark:bg-blue-900/10 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
               <span className="text-xs font-medium text-text-secondary block mb-1">Occupied</span>
-              <span className="text-2xl font-bold text-blue-500">32</span>
+              <span className="text-2xl font-bold text-blue-500">{occupancy_breakdown.occupied}</span>
             </motion.div>
             <motion.div whileHover={{ scale: 1.02 }} className="bg-yellow-50 dark:bg-yellow-900/10 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800">
               <span className="text-xs font-medium text-text-secondary block mb-1">Cleaning</span>
-              <span className="text-2xl font-bold text-yellow-600">2</span>
+              <span className="text-2xl font-bold text-yellow-600">{occupancy_breakdown.cleaning}</span>
             </motion.div>
             <motion.div whileHover={{ scale: 1.02 }} className="bg-red-50 dark:bg-red-900/10 rounded-xl p-4 border border-red-200 dark:border-red-800">
               <span className="text-xs font-medium text-text-secondary block mb-1">Maintenance</span>
-              <span className="text-2xl font-bold text-red-500">1</span>
+              <span className="text-2xl font-bold text-red-500">{occupancy_breakdown.maintenance}</span>
             </motion.div>
           </div>
         </motion.div>
@@ -285,12 +385,12 @@ export default function Dashboard() {
       <motion.div variants={containerVariant}>
         <h3 className="text-lg md:text-xl font-bold text-text-primary mb-3 md:mb-4">Quick Links</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-          <QuickLink icon={Plus} label="New Booking" />
-          <QuickLink icon={LogIn} label="Check In" />
-          <QuickLink icon={LogOut} label="Check Out" />
-          <QuickLink icon={Bed} label="Rooms" />
-          <QuickLink icon={Users} label="Guests" />
-          <QuickLink icon={FileText} label="Reports" />
+          <QuickLink icon={Plus} label="Booking List" href="/booking-list" />
+          <QuickLink icon={LogIn} label="Check In" href="/room-management" />
+          <QuickLink icon={LogOut} label="Check Out" href="/room-management" />
+          <QuickLink icon={Bed} label="Rooms" href="/room-management" />
+          <QuickLink icon={Users} label="Guests" href="/guest-list" />
+          <QuickLink icon={FileText} label="Reports" href="/reports" />
         </div>
       </motion.div>
 
@@ -303,8 +403,8 @@ export default function Dashboard() {
           </Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-4">
-          {rooms.map((room) => (
-            <RoomStatusCard key={room.id} room={room} />
+          {room_status_overview.map((room) => (
+            <RoomStatusCard key={room.room_id} room={room} />
           ))}
         </div>
       </motion.div>

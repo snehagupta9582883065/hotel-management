@@ -34,6 +34,12 @@ export default {
                     '100%': { opacity: '1', transform: 'translateY(0)' },
                 },
             },
+            borderRadius: {
+                'lg': '0.375rem',    // 6px
+                'xl': '0.5rem',      // 8px
+                '2xl': '0.625rem',   // 10px
+                '3xl': '0.75rem',    // 12px
+            },
         },
     },
     plugins: [],

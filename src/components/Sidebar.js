@@ -6,9 +6,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     LayoutDashboard,
-    BedDouble,
     Hotel,
-    Settings,
     ChevronDown,
     CalendarDays,
     Users,
@@ -17,8 +15,6 @@ import {
     UserCog,
     BarChart3,
     Shield,
-    Layers,
-    MessageSquare,
     X
 } from "lucide-react";
 
@@ -70,11 +66,11 @@ const MENU_ITEMS = [
         name: "Restaurant",
         icon: Utensils,
         submenu: [
-            { name: "Dashboard", path: "/restaurant/dashboard" },
-            { name: "Table Management", path: "/restaurant/table-management" },
-            { name: "Menu Management", path: "/restaurant/menu-management" },
-            { name: "Order Management", path: "/restaurant/orders-management" },
-            { name: "KOT Management", path: "/restaurant/kot-management" },
+            { name: "Dashboard", path: "/restaurant-dashboard" },
+            { name: "Table Management", path: "/table-management" },
+            { name: "Menu Management", path: "/menu-management" },
+            { name: "Order Management", path: "/orders-management" },
+            { name: "KOT Management", path: "/kot-management" },
         ],
     },
     {
@@ -88,26 +84,12 @@ const MENU_ITEMS = [
     {
         name: "Reports & Analytics",
         icon: BarChart3,
-        submenu: [
-            { name: "Occupancy Reports", path: "/occupancy-reports" },
-            { name: "Revenue Reports", path: "/revenue-reports" },
-            { name: "Room Performance", path: "/room-performance" },
-            { name: "Restaurant Sales", path: "/resturant-sales" },
-            { name: "Tax & GST Reports", path: "/tax-gst-reports" },
-            { name: "Payment Summary", path: "/payment-summary" },
-        ],
+        path: "/reports",
     },
     {
         name: "Admin & Settings",
         icon: Shield,
-        submenu: [
-            { name: "System Settings", path: "/system-settings" },
-            { name: "Tax Configuration", path: "/tax-configuration" },
-            { name: "Notifications", path: "/notifications" },
-            { name: "Backup & Restore", path: "/backup-restore" },
-            { name: "Audit Logs", path: "/audit-logs" },
-            { name: "Subscription", path: "/subscription" },
-        ],
+        path: "/settings",
     },
 ];
 
