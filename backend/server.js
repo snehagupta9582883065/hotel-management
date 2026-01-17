@@ -9,9 +9,11 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Routes
 const dashboardRoutes = require('./routes/dashboardRoutes');
+
 app.use('/api', dashboardRoutes);
+
+
 
 // Base Route
 app.get('/', (req, res) => {

@@ -202,82 +202,82 @@ export default function BookingList() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="card flex items-center gap-5 hover:transform hover:-translate-y-1 transition-all duration-300">
+        <div className="card flex items-center gap-5 hover:transform hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-sm">
           <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white flex-shrink-0">
             <Calendar size={24} />
           </div>
           <div className="flex-1">
-            <div className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1.5">Total Bookings</div>
-            <div className="text-3xl font-bold text-text-primary">{totalBookings}</div>
+            <div className="text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5">Total Bookings</div>
+            <div className="text-3xl font-bold text-primary">{totalBookings}</div>
           </div>
         </div>
 
-        <div className="card flex items-center gap-5 hover:transform hover:-translate-y-1 transition-all duration-300">
+        <div className="card flex items-center gap-5 hover:transform hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-sm">
           <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white flex-shrink-0">
             <CheckCircle size={24} />
           </div>
           <div className="flex-1">
-            <div className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1.5">Confirmed</div>
-            <div className="text-3xl font-bold text-text-primary">{confirmedBookings}</div>
+            <div className="text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5">Confirmed</div>
+            <div className="text-3xl font-bold text-primary">{confirmedBookings}</div>
           </div>
         </div>
 
-        <div className="card flex items-center gap-5 hover:transform hover:-translate-y-1 transition-all duration-300">
+        <div className="card flex items-center gap-5 hover:transform hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-sm">
           <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white flex-shrink-0">
             <Users size={24} />
           </div>
           <div className="flex-1">
-            <div className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1.5">Checked-in</div>
-            <div className="text-3xl font-bold text-text-primary">{checkedInBookings}</div>
+            <div className="text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5">Checked-in</div>
+            <div className="text-3xl font-bold text-primary">{checkedInBookings}</div>
           </div>
         </div>
 
-        <div className="card flex items-center gap-5 hover:transform hover:-translate-y-1 transition-all duration-300">
+        <div className="card flex items-center gap-5 hover:transform hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-sm">
           <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white flex-shrink-0">
             <DollarSign size={24} />
           </div>
           <div className="flex-1">
-            <div className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1.5">Total Revenue</div>
-            <div className="text-3xl font-bold text-text-primary">${totalRevenue.toLocaleString()}</div>
+            <div className="text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5">Total Revenue</div>
+            <div className="text-3xl font-bold text-primary">${totalRevenue.toLocaleString()}</div>
           </div>
         </div>
       </div>
 
       {/* Booking List Section */}
-      <div className="card p-8">
+      <div className="card p-8 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-sm">
         <div className="mb-8">
-          <div className="flex items-center justify-between gap-3 w-full">
-            <div className="flex items-center gap-3 bg-bg-primary px-4 py-2.5 rounded-xl border border-border-color focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-500/20 transition-all flex-1 max-w-lg">
-              <Search size={18} className="text-text-secondary flex-shrink-0" />
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 w-full">
+            <div className="flex items-center gap-3 bg-gray-50 dark:bg-slate-800 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-500/20 transition-all flex-1 w-full max-w-lg">
+              <Search size={18} className="text-secondary flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Search by booking ID, guest name, or room..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="border-none bg-transparent outline-none w-full text-text-primary text-sm"
+                className="border-none bg-transparent outline-none w-full text-primary text-sm font-medium"
               />
             </div>
-            <div className="relative" ref={filterRef}>
+            <div className="relative w-full md:w-auto" ref={filterRef}>
               <button
-                className="flex items-center gap-2 px-4 py-2.5 bg-bg-primary border border-border-color rounded-xl text-text-secondary text-sm font-medium cursor-pointer hover:border-purple-500 hover:text-purple-500 hover:bg-purple-500/5 transition-all relative"
+                className="w-full md:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary text-sm font-bold cursor-pointer hover:border-purple-500 hover:text-purple-500 hover:bg-purple-500/5 transition-all relative"
                 onClick={() => setShowFilterDropdown(!showFilterDropdown)}
               >
                 <span>All Status</span>
                 {activeFiltersCount > 0 && (
-                  <span className="bg-purple-600 text-white text-xs font-semibold px-1.5 py-0.5 rounded-lg min-w-[18px] text-center">
+                  <span className="bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-lg min-w-[18px] text-center">
                     {activeFiltersCount}
                   </span>
                 )}
                 <ChevronDown size={16} className={`transition-transform ${showFilterDropdown ? 'rotate-180' : ''}`} />
               </button>
               {showFilterDropdown && (
-                <div className="absolute top-full right-0 mt-2 bg-bg-secondary border border-border-color rounded-2xl p-6 min-w-[300px] shadow-2xl z-50 animate-slideDown">
+                <div className="absolute top-full right-0 mt-3 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-6 min-w-[300px] shadow-2xl z-50 animate-slideDown">
                   <div className="mb-5">
-                    <label className="block text-xs font-bold text-text-primary mb-2.5 uppercase tracking-wider">Status</label>
+                    <label className="block text-xs font-bold text-primary mb-2.5 uppercase tracking-wider">Status</label>
                     <select
                       value={filterStatus}
                       onChange={(e) => setFilterStatus(e.target.value)}
-                      className="w-full px-3.5 py-3 bg-bg-primary border border-border-color rounded-xl text-text-primary text-sm font-medium cursor-pointer transition-all outline-none hover:border-purple-500 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
+                      className="w-full px-3.5 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-primary text-sm font-medium cursor-pointer transition-all outline-none hover:border-purple-500 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
                     >
                       <option value="all">All Status</option>
                       {statusOptions.map(status => (
@@ -286,10 +286,10 @@ export default function BookingList() {
                     </select>
                   </div>
                   {activeFiltersCount > 0 && (
-                    <div className="mt-5 pt-5 border-t border-border-color">
+                    <div className="mt-5 pt-5 border-t border-gray-100 dark:border-slate-800">
                       <button
                         onClick={clearFilters}
-                        className="w-full px-3 py-3 bg-gradient-to-br from-red-500/10 to-red-500/5 border border-red-500/30 rounded-xl text-red-500 text-sm font-semibold cursor-pointer hover:from-red-500/15 hover:to-red-500/10 hover:border-red-500 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/20 active:translate-y-0 transition-all"
+                        className="w-full px-3 py-3 bg-red-500/5 dark:bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm font-bold cursor-pointer hover:bg-red-500/10 transition-all"
                       >
                         Clear All Filters
                       </button>
@@ -301,51 +301,51 @@ export default function BookingList() {
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-border-color">
+        <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-slate-800">
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="bg-bg-primary border-b border-border-color">
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Booking ID</th>
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Guest Name</th>
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Room</th>
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Check In</th>
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Check Out</th>
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Guests</th>
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Status</th>
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Total</th>
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Paid</th>
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Balance</th>
-                <th className="px-5 py-4 text-left font-semibold text-text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Actions</th>
+              <tr className="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
+                <th className="px-5 py-4 text-left font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Booking ID</th>
+                <th className="px-5 py-4 text-left font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Guest Name</th>
+                <th className="px-5 py-4 text-left font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Room</th>
+                <th className="px-5 py-4 text-left font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Check In</th>
+                <th className="px-5 py-4 text-left font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Check Out</th>
+                <th className="px-5 py-4 text-left font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Guests</th>
+                <th className="px-5 py-4 text-left font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="px-5 py-4 text-left font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Total</th>
+                <th className="px-5 py-4 text-left font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Paid</th>
+                <th className="px-5 py-4 text-left font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Balance</th>
+                <th className="px-5 py-4 text-right font-bold text-secondary text-xs uppercase tracking-wider whitespace-nowrap">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
               {filteredBookings.map((booking) => (
-                <tr key={booking.id} className="border-b border-border-color hover:bg-purple-500/5 transition-colors">
-                  <td className="px-5 py-5 text-text-primary font-semibold whitespace-nowrap">{booking.id}</td>
-                  <td className="px-5 py-5 text-text-primary font-medium whitespace-nowrap">{booking.guestName}</td>
+                <tr key={booking.id} className="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50/50 dark:hover:bg-slate-800/50 transition-colors group">
+                  <td className="px-5 py-5 text-primary font-bold whitespace-nowrap">{booking.id}</td>
+                  <td className="px-5 py-5 text-primary font-bold whitespace-nowrap">{booking.guestName}</td>
                   <td className="px-5 py-5 whitespace-nowrap">
-                    <div className="flex flex-col gap-1">
-                      <div className="font-semibold text-text-primary">{booking.room}</div>
-                      <div className="text-xs text-text-secondary">{booking.roomType}</div>
+                    <div className="flex flex-col gap-0.5">
+                      <div className="font-bold text-primary">{booking.room}</div>
+                      <div className="text-xs text-secondary font-medium">{booking.roomType}</div>
                     </div>
                   </td>
-                  <td className="px-5 py-5 text-text-primary font-medium whitespace-nowrap">{booking.checkIn}</td>
-                  <td className="px-5 py-5 text-text-primary font-medium whitespace-nowrap">{booking.checkOut}</td>
-                  <td className="px-5 py-5 text-text-primary font-medium whitespace-nowrap">{booking.guests}</td>
+                  <td className="px-5 py-5 text-primary font-medium whitespace-nowrap">{booking.checkIn}</td>
+                  <td className="px-5 py-5 text-primary font-medium whitespace-nowrap">{booking.checkOut}</td>
+                  <td className="px-5 py-5 text-primary font-medium whitespace-nowrap">{booking.guests}</td>
                   <td className="px-5 py-5 whitespace-nowrap">
-                    <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg font-semibold text-xs min-w-[90px] ${getStatusClass(booking.status)}`}>
+                    <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg font-bold text-xs min-w-[90px] ${getStatusClass(booking.status)}`}>
                       {booking.status}
                     </span>
                   </td>
-                  <td className="px-5 py-5 text-text-primary font-semibold whitespace-nowrap">{booking.total}</td>
-                  <td className="px-5 py-5 text-green-500 font-semibold whitespace-nowrap">{booking.paid}</td>
-                  <td className={`px-5 py-5 font-semibold whitespace-nowrap ${booking.balance === '$0' ? 'text-text-secondary' : 'text-red-500'}`}>
+                  <td className="px-5 py-5 text-primary font-bold whitespace-nowrap">{booking.total}</td>
+                  <td className="px-5 py-5 text-green-500 dark:text-green-400 font-bold whitespace-nowrap">{booking.paid}</td>
+                  <td className={`px-5 py-5 font-bold whitespace-nowrap ${booking.balance === '$0' ? 'text-secondary' : 'text-red-500 dark:text-red-400'}`}>
                     {booking.balance}
                   </td>
-                  <td className="px-5 py-5 whitespace-nowrap">
-                    <div className="flex gap-2">
+                  <td className="px-5 py-5 whitespace-nowrap text-right">
+                    <div className="flex items-center justify-end gap-2">
                       <button
-                        className="w-8 h-8 rounded-lg border border-border-color bg-bg-primary text-text-secondary flex items-center justify-center cursor-pointer hover:border-purple-500 hover:text-purple-500 hover:bg-purple-500/5 hover:-translate-y-0.5 transition-all"
+                        className="w-8 h-8 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-secondary flex items-center justify-center cursor-pointer hover:border-purple-500 hover:text-purple-500 transition-all shadow-sm"
                         title="View"
                         onClick={() => handleView(booking.id)}
                       >
@@ -353,7 +353,7 @@ export default function BookingList() {
                       </button>
                       {booking.status === 'Confirmed' && (
                         <button
-                          className="w-8 h-8 rounded-lg border border-green-500/30 bg-bg-primary text-green-500 flex items-center justify-center cursor-pointer hover:border-green-500 hover:bg-green-500/10 hover:-translate-y-0.5 transition-all"
+                          className="w-8 h-8 rounded-lg border border-green-500/30 dark:border-green-500/20 bg-green-500/5 text-green-500 flex items-center justify-center cursor-pointer hover:bg-green-500 hover:text-white transition-all shadow-sm"
                           title="Check In"
                           onClick={() => handleCheckIn(booking.id)}
                         >
@@ -362,7 +362,7 @@ export default function BookingList() {
                       )}
                       {(booking.status === 'Confirmed' || booking.status === 'Checked-in') && (
                         <button
-                          className="w-8 h-8 rounded-lg border border-red-500/30 bg-bg-primary text-red-500 flex items-center justify-center cursor-pointer hover:border-red-500 hover:bg-red-500/10 hover:-translate-y-0.5 transition-all"
+                          className="w-8 h-8 rounded-lg border border-red-500/30 dark:border-red-500/20 bg-red-500/5 text-red-500 flex items-center justify-center cursor-pointer hover:bg-red-500 hover:text-white transition-all shadow-sm"
                           title="Cancel"
                           onClick={() => handleCancel(booking.id)}
                         >

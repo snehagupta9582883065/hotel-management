@@ -276,8 +276,8 @@ function AddGuestModal({ isOpen, onClose, onAdd }) {
     onAdd(newGuest);
   };
 
-  const inputClass = "w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)]/20 focus:border-[var(--accent-primary)] outline-none transition-all text-sm text-[var(--text-primary)]";
-  const labelClass = "text-xs font-medium text-[var(--text-secondary)]";
+  const inputClass = "w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 outline-none transition-all text-sm text-primary";
+  const labelClass = "text-xs font-medium text-secondary";
 
   return (
     <motion.div
@@ -290,14 +290,14 @@ function AddGuestModal({ isOpen, onClose, onAdd }) {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="bg-[var(--bg-secondary)] rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]"
+        className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-gray-100 dark:border-slate-800"
       >
-        <div className="p-5 border-b border-[var(--border-color)] flex justify-between items-center">
+        <div className="p-5 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center text-primary">
           <div>
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">Add New Guest</h2>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">Add a new guest to your hotel's guest database.</p>
+            <h2 className="text-lg font-bold">Add New Guest</h2>
+            <p className="text-xs text-secondary mt-0.5">Add a new guest to your hotel's guest database.</p>
           </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-[var(--bg-primary)] rounded-full text-[var(--text-secondary)] transition-colors">
+          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full text-secondary transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -353,16 +353,16 @@ function AddGuestModal({ isOpen, onClose, onAdd }) {
           </form>
         </div>
 
-        <div className="p-5 border-t border-[var(--border-color)] flex justify-end gap-3 bg-[var(--bg-primary)]/50">
+        <div className="p-5 border-t border-gray-100 dark:border-slate-800 flex justify-end gap-3 bg-gray-50/50 dark:bg-slate-900/50">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg border border-[var(--border-color)] text-[var(--text-secondary)] text-sm font-medium hover:bg-[var(--bg-primary)] transition-colors"
+            className="px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 text-secondary text-sm font-medium hover:bg-white dark:hover:bg-slate-800 transition-colors bg-white dark:bg-slate-900"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 rounded-lg bg-[var(--accent-primary)] hover:opacity-90 text-white text-sm font-medium transition-all"
+            className="px-4 py-2 rounded-lg bg-purple-600 hover:opacity-90 text-white text-sm font-medium transition-all"
           >
             Add Guest
           </button>
@@ -386,14 +386,14 @@ function GuestProfileModal({ isOpen, onClose, guest }) {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="bg-[var(--bg-secondary)] rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]"
+        className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-gray-100 dark:border-slate-800 text-primary"
       >
-        <div className="p-5 border-b border-[var(--border-color)] flex justify-between items-center">
+        <div className="p-5 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
           <div>
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">Guest Profile - {guest.name}</h2>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">View detailed information about this guest.</p>
+            <h2 className="text-lg font-bold">Guest Profile - {guest.name}</h2>
+            <p className="text-xs text-secondary mt-0.5">View detailed information about this guest.</p>
           </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-[var(--bg-primary)] rounded-full text-[var(--text-secondary)] transition-colors">
+          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full text-secondary transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -429,13 +429,13 @@ function GuestProfileModal({ isOpen, onClose, guest }) {
 
           {/* Stats */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-[var(--bg-primary)]/50 p-3 rounded-xl border border-[var(--border-color)]">
-              <p className="text-xs text-[var(--text-secondary)]">Total Stays</p>
-              <p className="text-xl font-bold text-[var(--text-primary)] mt-0.5">{guest.totalStays}</p>
+            <div className="bg-gray-50 dark:bg-slate-800 p-3 rounded-xl border border-gray-100 dark:border-slate-700">
+              <p className="text-xs text-secondary">Total Stays</p>
+              <p className="text-xl font-bold mt-0.5">{guest.totalStays}</p>
             </div>
-            <div className="bg-[var(--bg-primary)]/50 p-3 rounded-xl border border-[var(--border-color)]">
-              <p className="text-xs text-[var(--text-secondary)]">Total Spent</p>
-              <p className="text-xl font-bold text-[var(--text-primary)] mt-0.5">${guest.totalSpent.toLocaleString()}</p>
+            <div className="bg-gray-50 dark:bg-slate-800 p-3 rounded-xl border border-gray-100 dark:border-slate-700">
+              <p className="text-xs text-secondary">Total Spent</p>
+              <p className="text-xl font-bold mt-0.5">${guest.totalSpent.toLocaleString()}</p>
             </div>
           </div>
 
@@ -445,16 +445,16 @@ function GuestProfileModal({ isOpen, onClose, guest }) {
             <div className="space-y-2">
               {guest.history && guest.history.length > 0 ? (
                 guest.history.map((stay, idx) => (
-                  <div key={idx} className="flex justify-between items-center p-2.5 rounded-lg border border-[var(--border-color)] hover:bg-[var(--bg-primary)] transition-colors">
+                  <div key={idx} className="flex justify-between items-center p-2.5 rounded-lg border border-gray-100 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
                     <div>
-                      <p className="text-sm font-medium text-[var(--text-primary)]">{stay.room}</p>
-                      <p className="text-[10px] text-[var(--text-secondary)]">{stay.date}</p>
+                      <p className="text-sm font-medium">{stay.room}</p>
+                      <p className="text-[10px] text-secondary">{stay.date}</p>
                     </div>
-                    <p className="text-sm font-semibold text-[var(--text-primary)]">${stay.amount}</p>
+                    <p className="text-sm font-semibold">${stay.amount}</p>
                   </div>
                 ))
               ) : (
-                <p className="text-[var(--text-secondary)] text-xs italic">No stay history available.</p>
+                <p className="text-secondary text-xs italic">No stay history available.</p>
               )}
             </div>
           </div>

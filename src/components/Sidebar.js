@@ -25,7 +25,7 @@ const MENU_ITEMS = [
         name: "Hotel Management",
         icon: Hotel,
         submenu: [
-            { name: "Hotel Profile", path: "/hotel/profile" },
+            { name: "Hotel Profile", path: "/hotel-profile" },
             { name: "Floor Management", path: "/floor-management" },
             { name: "Room Management", path: "/room-management" },
             { name: "Seasonal Pricing", path: "/seasonal-pricing" },
