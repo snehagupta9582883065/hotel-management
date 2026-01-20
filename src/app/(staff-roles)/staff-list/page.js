@@ -45,7 +45,7 @@ const MOCK_STAFF = [
     name: "Jessica Davis",
     role: "Front Desk Agent",
     department: "Reception",
-    status: "On Leave",
+    status: "Inactive",
     email: "jessica.d@grandplaza.com",
     phone: "+1 (555) 345-6789",
     shift: "Night",
@@ -105,7 +105,7 @@ export default function StaffListPage() {
   const stats = {
     total: staffList.length,
     active: staffList.filter(s => s.status === 'Active').length,
-    onLeave: staffList.filter(s => s.status === 'On Leave').length,
+    inactive: staffList.filter(s => s.status === 'Inactive').length,
     departments: new Set(staffList.map(s => s.department)).size
   };
 
@@ -190,8 +190,8 @@ export default function StaffListPage() {
           border="border-green-100 dark:border-green-800"
         />
         <StatsCard
-          title="On Leave"
-          value={stats.onLeave}
+          title="Inactive"
+          value={stats.inactive}
           icon={<Clock size={20} className="text-amber-600 dark:text-amber-400" />}
           bg="bg-amber-50 dark:bg-amber-900/20"
           border="border-amber-100 dark:border-amber-800"
@@ -465,7 +465,7 @@ export default function StaffListPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <FormSelect label="Department" value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} options={['Management', 'Kitchen', 'Reception', 'Housekeeping', 'Front Office']} required />
-                  <FormSelect label="Status" value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} options={['Active', 'On Leave', 'Resigned']} />
+                  <FormSelect label="Status" value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} options={['Active', 'Inactive']} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <FormInput label="Email Address" type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder="email@example.com" />
@@ -496,12 +496,9 @@ export default function StaffListPage() {
 // Components
 const StatusBadge = ({ status }) => (
   <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${status === 'Active' ? 'bg-green-50 text-green-700 border border-green-200' :
-    status === 'On Leave' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-      'bg-gray-50 text-gray-700 border border-gray-200'
+    'bg-gray-50 text-gray-700 border border-gray-200'
     }`}>
-    <span className={`w-1.5 h-1.5 rounded-full ${status === 'Active' ? 'bg-green-500' :
-      status === 'On Leave' ? 'bg-amber-500' : 'bg-gray-500'
-      }`} />
+    <span className={`w-1.5 h-1.5 rounded-full ${status === 'Active' ? 'bg-green-500' : 'bg-gray-500'}`} />
     {status}
   </span>
 );

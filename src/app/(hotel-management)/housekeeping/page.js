@@ -26,11 +26,11 @@ export default function HousekeepingPage() {
 
   // Mock Data for Rooms
   const [rooms, setRooms] = useState([
-    { id: 1, roomNumber: '101', floor: 'Floor 1', status: 'Dirty', priority: 'High', taskType: 'Check-out Cleaning', assignedTo: 'Maria Garcia', estTime: '45 min', lastCleaned: '16/01/2026, 10:30:00' },
-    { id: 2, roomNumber: '205', floor: 'Floor 2', status: 'In Progress', priority: 'Medium', taskType: 'Daily Cleaning', assignedTo: 'John Smith', estTime: '30 min', lastCleaned: '16/01/2026, 09:15:00' },
-    { id: 3, roomNumber: '310', floor: 'Floor 3', status: 'Inspection', priority: 'Medium', taskType: 'Deep Cleaning', assignedTo: 'Sarah Johnson', estTime: '60 min', lastCleaned: '17/01/2026, 11:20:00' },
-    { id: 4, roomNumber: '412', floor: 'Floor 4', status: 'Maintenance', priority: 'Urgent', taskType: 'Repair Required', assignedTo: 'Maintenance Team', estTime: '120 min', lastCleaned: '15/01/2026, 14:00:00' },
-    { id: 5, roomNumber: '208', floor: 'Floor 2', status: 'Clean', priority: 'Low', taskType: 'Completed', assignedTo: 'Maria Garcia', estTime: '0 min', lastCleaned: '17/01/2026, 13:45:00' },
+    { id: 1, roomNumber: '101', floor: 'Floor 1', status: 'Dirty', priority: 'High', assignedTo: 'Maria Garcia', lastCleaned: '16/01/2026, 10:30:00' },
+    { id: 2, roomNumber: '205', floor: 'Floor 2', status: 'In Progress', priority: 'Medium', assignedTo: 'John Smith', lastCleaned: '16/01/2026, 09:15:00' },
+    { id: 3, roomNumber: '310', floor: 'Floor 3', status: 'Inspection', priority: 'Medium', assignedTo: 'Sarah Johnson', lastCleaned: '17/01/2026, 11:20:00' },
+    { id: 4, roomNumber: '412', floor: 'Floor 4', status: 'Maintenance', priority: 'Urgent', assignedTo: 'Maintenance Team', lastCleaned: '15/01/2026, 14:00:00' },
+    { id: 5, roomNumber: '208', floor: 'Floor 2', status: 'Clean', priority: 'Low', assignedTo: 'Maria Garcia', lastCleaned: '17/01/2026, 13:45:00' },
   ]);
 
   const stats = [
@@ -67,6 +67,7 @@ export default function HousekeepingPage() {
         return {
           ...room,
           status: selectedRoom.status,
+          priority: selectedRoom.priority,
           // Update last cleaned if status becomes Clean
           lastCleaned: selectedRoom.status === 'Clean' ? new Date().toLocaleString('en-GB') : room.lastCleaned
         };
@@ -167,9 +168,7 @@ export default function HousekeepingPage() {
                 <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Floor</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Status</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Priority</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Task Type</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Assigned To</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Est. Time</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Last Cleaned</th>
                 <th className="px-6 py-4 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
               </tr>
@@ -189,7 +188,7 @@ export default function HousekeepingPage() {
                       {room.priority}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-secondary">{room.taskType}</td>
+
 
                   {/* Assigned To Dropdown */}
                   <td className="px-6 py-4 relative">
@@ -228,7 +227,6 @@ export default function HousekeepingPage() {
                     </div>
                   </td>
 
-                  <td className="px-6 py-4 text-sm text-secondary">{room.estTime}</td>
                   <td className="px-6 py-4 text-sm text-secondary">{room.lastCleaned}</td>
                   <td className="px-6 py-4 text-right">
                     <button
@@ -284,6 +282,24 @@ export default function HousekeepingPage() {
                           }`}
                       >
                         {status}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold text-secondary mb-3 block">Priority</label>
+                  <div className="flex flex-wrap gap-3">
+                    {['High', 'Medium', 'Low', 'Urgent'].map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => setSelectedRoom(prev => ({ ...prev, priority: p }))}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedRoom.priority === p
+                          ? 'bg-accent-primary text-white shadow-lg shadow-blue-500/25'
+                          : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-primary hover:bg-gray-50 dark:hover:bg-slate-700'
+                          }`}
+                      >
+                        {p}
                       </button>
                     ))}
                   </div>

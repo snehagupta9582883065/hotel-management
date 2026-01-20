@@ -27,14 +27,18 @@ import {
 export default function SettingsPage() {
     const [activeTab, setActiveTab] = useState('system');
 
+    const currentUser = { role: 'Super Admin' };
     const TABS = [
         { id: 'system', label: 'System', icon: Settings },
         { id: 'tax', label: 'Taxation', icon: FileText },
         { id: 'notifications', label: 'Notifications', icon: Bell },
-        { id: 'backup', label: 'Backup & Restore', icon: Database },
         { id: 'audit', label: 'Audit Logs', icon: Shield },
         { id: 'subscription', label: 'Subscription', icon: CreditCard },
     ];
+
+    if (currentUser.role === 'Super Admin') {
+        TABS.splice(3, 0, { id: 'backup', label: 'Backup & Restore', icon: Database });
+    }
 
     const renderContent = () => {
         switch (activeTab) {

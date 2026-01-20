@@ -214,7 +214,7 @@ export default function Dashboard() {
         <StatCard title="Total Rooms" value="50" icon={Bed} />
         <StatCard title="Available Rooms" value="15" icon={Bed} />
         <StatCard title="Occupied Rooms" value="32" icon={Users} trend={12} />
-        <StatCard title="Today's Revenue" value="$6,800" icon={DollarSign} trend={8.5} />
+        <StatCard title="Today's Revenue" value="₹6,800" icon={DollarSign} trend={8.5} />
         <StatCard title="Today's Check-ins" value="5" icon={LogIn} />
         <StatCard title="Today's Check-outs" value="3" icon={LogOut} />
       </motion.div>

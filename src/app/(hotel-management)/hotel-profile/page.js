@@ -21,6 +21,7 @@ export default function HotelProfilePage() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null); // { type: 'success' | 'error', text: '' }
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // Static Initial Data
   const [formData, setFormData] = useState({
@@ -59,9 +60,14 @@ export default function HotelProfilePage() {
     }));
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
+    setShowConfirmModal(true);
+  };
+
+  const executeSave = async () => {
     setSaving(true);
     setMessage(null);
+    setShowConfirmModal(false);
 
     // Simulate API call
     setTimeout(() => {
@@ -542,6 +548,49 @@ export default function HotelProfilePage() {
           )}
         </motion.div>
       )}
+      {/* Confirmation Modal */}
+      <AnimatePresence>
+        {showConfirmModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowConfirmModal(false)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 10 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 10 }}
+              className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden"
+            >
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-500 mx-auto mb-4">
+                  <AlertCircle size={32} />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Save Changes?</h3>
+                <p className="text-secondary text-sm mb-6">Are you sure you want to save the changes to the hotel profile?</p>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowConfirmModal(false)}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 font-medium hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    No, Cancel
+                  </button>
+                  <button
+                    onClick={executeSave}
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-accent-primary text-white font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20"
+                  >
+                    Yes, Save
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

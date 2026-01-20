@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-    TrendingUp, Users, Clock, DollarSign,
+    TrendingUp, Users, Clock, IndianRupee,
     ShoppingBag, Activity, Utensils, MapPin
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -19,11 +19,11 @@ const revenueData = [
 ];
 
 const orders = [
-    { id: 'R001', location: 'Table 5', items: 'Pasta, Wine', time: '12:30 PM', amount: '$45', status: 'Completed' },
-    { id: 'R002', location: 'Room 205', items: 'Breakfast Set', time: '1:15 PM', amount: '$28', status: 'Preparing' },
-    { id: 'R003', location: 'Table 8', items: 'Steak, Salad', time: '1:45 PM', amount: '$68', status: 'Served' },
-    { id: 'R004', location: 'Room 103', items: 'Club Sandwich', time: '2:00 PM', amount: '$18', status: 'Delivered' },
-    { id: 'R005', location: 'Table 3', items: 'Pizza, Drinks', time: '2:20 PM', amount: '$35', status: 'Preparing' },
+    { id: 'R001', location: 'Table 5', items: 'Pasta, Wine', time: '12:30 PM', amount: '₹45', status: 'Completed' },
+    { id: 'R002', location: 'Room 205', items: 'Breakfast Set', time: '1:15 PM', amount: '₹28', status: 'Preparing' },
+    { id: 'R003', location: 'Table 8', items: 'Steak, Salad', time: '1:45 PM', amount: '₹68', status: 'Served' },
+    { id: 'R004', location: 'Room 103', items: 'Club Sandwich', time: '2:00 PM', amount: '₹18', status: 'Delivered' },
+    { id: 'R005', location: 'Table 3', items: 'Pizza, Drinks', time: '2:20 PM', amount: '₹35', status: 'Preparing' },
 ];
 
 const topItems = [
@@ -90,7 +90,7 @@ const CustomTooltip = ({ active, payload, label }) => {
             <div className="bg-bg-secondary/90 dark:bg-slate-800/90 backdrop-blur-md p-4 rounded-xl border border-gray-100 dark:border-white/10 shadow-xl">
                 <p className="text-text-secondary text-xs mb-1 font-medium">{label}</p>
                 <p className="text-lg font-bold text-purple-600">
-                    ${payload[0].value.toLocaleString()}
+                    ₹{payload[0].value.toLocaleString()}
                 </p>
             </div>
         );
@@ -108,10 +108,10 @@ export default function RestaurantDashboard() {
         >
             {/* Top Stats Row */}
             <motion.div variants={containerVariant} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <StatCard title="Today's Revenue" value="$2,100" icon={DollarSign} colorClass="bg-green-500 text-green-500" />
+                <StatCard title="Today's Revenue" value="₹2,100" icon={IndianRupee} colorClass="bg-green-500 text-green-500" />
                 <StatCard title="Total Orders" value="5" icon={ShoppingBag} colorClass="bg-blue-500 text-blue-500" />
                 <StatCard title="Active Orders" value="3" icon={Clock} colorClass="bg-orange-500 text-orange-500" />
-                <StatCard title="Avg Order Value" value="$420" icon={Activity} colorClass="bg-purple-500 text-purple-500" />
+                <StatCard title="Avg Order Value" value="₹420" icon={Activity} colorClass="bg-purple-500 text-purple-500" />
             </motion.div>
 
             {/* 7-Day Revenue Trend */}

@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 
 export default function ForeignGuestPage() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('Personal Info');
 
     // Mock Data
@@ -233,13 +232,6 @@ export default function ForeignGuestPage() {
                     <p className="text-secondary mt-1">Manage foreign guest documentation and C-Form</p>
                 </div>
                 <div className="flex gap-3">
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="flex items-center gap-2 px-6 py-2 bg-accent-primary hover:opacity-90 text-white rounded-lg transition-all shadow-lg shadow-blue-500/25"
-                    >
-                        <Plus size={18} />
-                        <span>Register Guest</span>
-                    </button>
                     <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-sm font-bold text-primary hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm">
                         <Download size={18} />
                         <span>Export C-Forms</span>
@@ -331,70 +323,6 @@ export default function ForeignGuestPage() {
                     </table>
                 </div>
             </motion.div>
-
-            {/* Register Guest Modal */}
-            <AnimatePresence>
-                {isModalOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.95 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0.95 }}
-                            className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-xl overflow-hidden relative border border-gray-100 dark:border-slate-800"
-                        >
-                            <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between bg-gray-50/50 dark:bg-slate-800/50">
-                                <h3 className="text-xl font-black text-primary">Register Foreign Guest</h3>
-                                <button
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                                >
-                                    <X size={20} />
-                                </button>
-                            </div>
-
-                            {/* Tabs */}
-                            <div className="px-6 pt-4 flex gap-2">
-                                {['Personal Info', 'Travel Details', 'Stay Information'].map((tab) => (
-                                    <button
-                                        key={tab}
-                                        onClick={() => setActiveTab(tab)}
-                                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === tab
-                                            ? 'bg-accent-primary text-white shadow-lg shadow-blue-500/25'
-                                            : 'text-secondary hover:bg-gray-100 dark:hover:bg-slate-800'
-                                            }`}
-                                    >
-                                        {tab}
-                                    </button>
-                                ))}
-                            </div>
-
-                            <div className="p-6 min-h-[300px]">
-                                {renderTabContent()}
-                            </div>
-
-                            <div className="p-6 border-t border-gray-100 dark:border-slate-800 flex justify-end gap-3 bg-gray-50/50 dark:bg-slate-900/50">
-                                <button
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="px-6 py-2.5 text-sm font-bold text-secondary hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-all border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleRegister}
-                                    className="px-8 py-2.5 text-sm font-bold text-white bg-accent-primary rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25"
-                                >
-                                    Register Guest
-                                </button>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </div>
     );
 }

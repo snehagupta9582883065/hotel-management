@@ -7,7 +7,7 @@ import {
     FileText,
     CreditCard,
     Calendar,
-    DollarSign,
+    IndianRupee as DollarSign,
     User,
     MoreVertical,
     X,
@@ -160,24 +160,24 @@ export default function FolioManagementPage() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-right font-medium">
-                                                {t.charge > 0 ? `$${t.charge}` : '-'}
+                                                {t.charge > 0 ? `₹${t.charge}` : '-'}
                                             </td>
                                             <td className="px-6 py-4 text-right font-medium text-green-600 dark:text-green-400">
-                                                {t.payment > 0 ? `$${t.payment}` : '-'}
+                                                {t.payment > 0 ? `₹${t.payment}` : '-'}
                                             </td>
                                         </tr>
                                     ))}
                                     {/* Totals Row */}
                                     <tr className="bg-gray-50/80 dark:bg-gray-700/30 font-bold text-gray-900 dark:text-white border-t-2 border-gray-100 dark:border-gray-600">
                                         <td colSpan="3" className="px-6 py-4 text-right">Total</td>
-                                        <td className="px-6 py-4 text-right">${selectedFolio.totalCharges}</td>
-                                        <td className="px-6 py-4 text-right text-green-600 dark:text-green-400">${selectedFolio.totalPaid}</td>
+                                        <td className="px-6 py-4 text-right">₹{selectedFolio.totalCharges}</td>
+                                        <td className="px-6 py-4 text-right text-green-600 dark:text-green-400">₹{selectedFolio.totalPaid}</td>
                                     </tr>
                                     <tr className="bg-orange-50/50 dark:bg-orange-900/10 font-bold text-gray-900 dark:text-white">
                                         <td colSpan="5" className="px-6 py-4">
                                             <div className="flex justify-between items-center">
                                                 <span>Balance Due</span>
-                                                <span className="text-orange-600 dark:text-orange-400">${selectedFolio.balance}</span>
+                                                <span className="text-orange-600 dark:text-orange-400">₹{selectedFolio.balance}</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -242,16 +242,16 @@ function FolioCard({ folio, isSelected, onClick }) {
                 <div className="grid grid-cols-3 gap-4 border-t border-gray-100 dark:border-gray-700 pt-5">
                     <div>
                         <p className="text-[11px] uppercase tracking-wider font-semibold text-gray-400 mb-1">Charges</p>
-                        <p className="font-bold text-gray-900 dark:text-white text-lg">${folio.totalCharges}</p>
+                        <p className="font-bold text-gray-900 dark:text-white text-lg">₹{folio.totalCharges}</p>
                     </div>
                     <div>
                         <p className="text-[11px] uppercase tracking-wider font-semibold text-gray-400 mb-1">Paid</p>
-                        <p className="font-bold text-green-600 dark:text-green-400 text-lg">${folio.totalPaid}</p>
+                        <p className="font-bold text-green-600 dark:text-green-400 text-lg">₹{folio.totalPaid}</p>
                     </div>
                     <div className="text-right">
                         <p className="text-[11px] uppercase tracking-wider font-semibold text-gray-400 mb-1">Due</p>
                         <p className={`font-bold text-lg ${folio.balance > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-green-600'}`}>
-                            ${folio.balance}
+                            ₹{folio.balance}
                         </p>
                     </div>
                 </div>
@@ -339,7 +339,7 @@ function AddChargeModal({ isOpen, onClose, onAdd }) {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-gray-700 dark:text-gray-300">Amount ($) <span className="text-red-500">*</span></label>
+                                    <label className="text-xs font-semibold text-gray-700 dark:text-gray-300">Amount (₹) <span className="text-red-500">*</span></label>
                                     <input
                                         type="number"
                                         className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all placeholder-gray-400 text-sm"

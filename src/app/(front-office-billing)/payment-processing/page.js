@@ -6,7 +6,7 @@ import {
   Download,
   Filter,
   CreditCard,
-  DollarSign,
+  IndianRupee,
   CheckCircle,
   Clock,
   AlertCircle,
@@ -19,6 +19,8 @@ import {
 
 export default function PaymentsPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterMode, setFilterMode] = useState('All');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transactions, setTransactions] = useState([
     { id: "TXN001", date: "12/01/2026", time: "10:30 AM", guest: "John Doe", room: "205", amount: 450, mode: "Card", status: "Success", receipt: "RCP001", remarks: "Room advance payment" },
@@ -28,11 +30,13 @@ export default function PaymentsPage() {
     { id: "TXN005", date: "12/01/2026", time: "02:45 PM", guest: "Charlie Davis", room: "405", amount: 120, mode: "Wallet", status: "Failed", receipt: "-", remarks: "Insufficient funds" },
   ]);
 
-  const filteredTransactions = transactions.filter(txn =>
-    txn.guest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    txn.room.toString().includes(searchQuery) ||
-    txn.id.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTransactions = transactions.filter(txn => {
+    const matchesSearch = txn.guest.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      txn.room.toString().includes(searchQuery) ||
+      txn.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesMode = filterMode === 'All' || txn.mode === filterMode;
+    return matchesSearch && matchesMode;
+  });
 
   const handleAddPayment = (newPayment) => {
     const newTxn = {
@@ -64,7 +68,7 @@ export default function PaymentsPage() {
     switch (mode) {
       case 'Card': return <CreditCard size={14} />;
       case 'UPI': return <Smartphone size={14} />;
-      case 'Cash': return <DollarSign size={14} />;
+      case 'Cash': return <IndianRupee size={14} />;
       case 'Bank Transfer': return <Landmark size={14} />;
       case 'Wallet': return <Wallet size={14} />;
       default: return <CreditCard size={14} />;
@@ -87,7 +91,7 @@ export default function PaymentsPage() {
           onClick={() => setIsModalOpen(true)}
           className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-all shadow-md shadow-purple-500/20 hover:shadow-lg hover:-translate-y-0.5"
         >
-          <DollarSign size={18} />
+          <IndianRupee size={18} />
           Process Payment
         </button>
       </div>
@@ -96,8 +100,8 @@ export default function PaymentsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
           title="Today's Collection"
-          value={`$${transactions.reduce((acc, curr) => acc + (curr.status === 'Success' ? curr.amount : 0), 0).toLocaleString()}`}
-          icon={<DollarSign size={20} className="text-green-600 dark:text-green-400" />}
+          value={`₹${transactions.reduce((acc, curr) => acc + (curr.status === 'Success' ? curr.amount : 0), 0).toLocaleString()}`}
+          icon={<IndianRupee size={20} className="text-green-600 dark:text-green-400" />}
           bg="bg-green-50 dark:bg-green-900/20"
           border="border-green-100 dark:border-green-800"
         />
@@ -123,11 +127,11 @@ export default function PaymentsPage() {
 
       {/* Method Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <MiniStatsCard title="Cash" value={`$${transactions.filter(t => t.mode === 'Cash' && t.status === 'Success').reduce((acc, t) => acc + t.amount, 0)}`} count={transactions.filter(t => t.mode === 'Cash').length} icon={<DollarSign size={16} />} />
-        <MiniStatsCard title="Card" value={`$${transactions.filter(t => t.mode === 'Card' && t.status === 'Success').reduce((acc, t) => acc + t.amount, 0)}`} count={transactions.filter(t => t.mode === 'Card').length} icon={<CreditCard size={16} />} />
-        <MiniStatsCard title="UPI" value={`$${transactions.filter(t => t.mode === 'UPI' && t.status === 'Success').reduce((acc, t) => acc + t.amount, 0)}`} count={transactions.filter(t => t.mode === 'UPI').length} icon={<Smartphone size={16} />} />
-        <MiniStatsCard title="Bank Transfer" value={`$${transactions.filter(t => t.mode === 'Bank Transfer' && t.status === 'Success').reduce((acc, t) => acc + t.amount, 0)}`} count={transactions.filter(t => t.mode === 'Bank Transfer').length} icon={<Landmark size={16} />} />
-        <MiniStatsCard title="Wallet" value={`$${transactions.filter(t => t.mode === 'Wallet' && t.status === 'Success').reduce((acc, t) => acc + t.amount, 0)}`} count={transactions.filter(t => t.mode === 'Wallet').length} icon={<Wallet size={16} />} />
+        <MiniStatsCard title="Cash" value={`₹${transactions.filter(t => t.mode === 'Cash' && t.status === 'Success').reduce((acc, t) => acc + t.amount, 0)}`} count={transactions.filter(t => t.mode === 'Cash').length} icon={<IndianRupee size={16} />} />
+        <MiniStatsCard title="Card" value={`₹${transactions.filter(t => t.mode === 'Card' && t.status === 'Success').reduce((acc, t) => acc + t.amount, 0)}`} count={transactions.filter(t => t.mode === 'Card').length} icon={<CreditCard size={16} />} />
+        <MiniStatsCard title="UPI" value={`₹${transactions.filter(t => t.mode === 'UPI' && t.status === 'Success').reduce((acc, t) => acc + t.amount, 0)}`} count={transactions.filter(t => t.mode === 'UPI').length} icon={<Smartphone size={16} />} />
+        <MiniStatsCard title="Bank Transfer" value={`₹${transactions.filter(t => t.mode === 'Bank Transfer' && t.status === 'Success').reduce((acc, t) => acc + t.amount, 0)}`} count={transactions.filter(t => t.mode === 'Bank Transfer').length} icon={<Landmark size={16} />} />
+        <MiniStatsCard title="Wallet" value={`₹${transactions.filter(t => t.mode === 'Wallet' && t.status === 'Success').reduce((acc, t) => acc + t.amount, 0)}`} count={transactions.filter(t => t.mode === 'Wallet').length} icon={<Wallet size={16} />} />
       </div>
 
       {/* Search Bar */}
@@ -162,7 +166,53 @@ export default function PaymentsPage() {
                 <th className="px-6 py-4 font-semibold">Guest Name</th>
                 <th className="px-6 py-4 font-semibold">Room</th>
                 <th className="px-6 py-4 font-semibold">Amount</th>
-                <th className="px-6 py-4 font-semibold">Payment Mode</th>
+                <th className="px-6 py-4 font-semibold relative">
+                  <div
+                    className="flex items-center gap-2 cursor-pointer group"
+                    onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  >
+                    <div className={`flex items-center gap-1.5 px-2 py-1 rounded-lg transition-all ${filterMode !== 'All' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
+                      <span>Payment Mode</span>
+                      <Filter size={14} className={`transition-colors ${filterMode !== 'All' ? 'text-purple-600 dark:text-purple-400' : 'text-gray-400 group-hover:text-gray-600'}`} />
+                    </div>
+                  </div>
+
+                  {/* Backdrop */}
+                  {isFilterOpen && (
+                    <div className="fixed inset-0 z-10" onClick={() => setIsFilterOpen(false)} />
+                  )}
+
+                  {/* Dropdown Menu */}
+                  <AnimatePresence>
+                    {isFilterOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 z-20 overflow-hidden"
+                      >
+                        <div className="p-1">
+                          {['All', 'Cash', 'Card', 'UPI', 'Bank Transfer', 'Wallet'].map((mode) => (
+                            <button
+                              key={mode}
+                              onClick={() => {
+                                setFilterMode(mode);
+                                setIsFilterOpen(false);
+                              }}
+                              className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-between ${filterMode === mode
+                                ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                                }`}
+                            >
+                              <span>{mode === 'All' ? 'All Modes' : mode}</span>
+                              {filterMode === mode && <CheckCircle size={12} />}
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </th>
                 <th className="px-6 py-4 font-semibold">Status</th>
                 <th className="px-6 py-4 font-semibold">Receipt No.</th>
                 <th className="px-6 py-4 font-semibold">Remarks</th>
@@ -183,7 +233,7 @@ export default function PaymentsPage() {
                         {txn.room}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">${txn.amount}</td>
+                    <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">₹{txn.amount}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                         {getModeIcon(txn.mode)}
@@ -320,7 +370,7 @@ function ProcessPaymentModal({ isOpen, onClose, onProcess }) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Amount ($) <span className="text-red-500">*</span></label>
+                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Amount (₹) <span className="text-red-500">*</span></label>
                     <input
                       type="number"
                       className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all placeholder-gray-400"

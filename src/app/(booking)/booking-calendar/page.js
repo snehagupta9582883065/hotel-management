@@ -1,16 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, X, User, Phone, Mail, Calendar, DollarSign, Bed, Users, Edit, Trash2, Check, Clock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, User, Phone, Mail, Calendar, IndianRupee as DollarSign, Bed, Users, Edit, Trash2, Check, Clock, CheckCircle, Plus, ChevronDown, CreditCard, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function BookingCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showGroupModal, setShowGroupModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [viewMode, setViewMode] = useState('month');
   const [activeTab, setActiveTab] = useState('guest');
+  const [idFile, setIdFile] = useState(null);
+  const [isIdVerified, setIsIdVerified] = useState(false);
+  const [isIdTypeDropdownOpen, setIsIdTypeDropdownOpen] = useState(false);
   const [formData, setFormData] = useState({
     guestName: '',
     email: '',
@@ -32,7 +35,9 @@ export default function BookingCalendar() {
     nationality: '',
     arrivalFrom: '',
     proceedingTo: '',
-    purposeOfVisit: ''
+    purposeOfVisit: '',
+    idType: 'Aadhar Card',
+    idNumber: ''
   });
 
   // Mock bookings data with multi-day support
@@ -181,6 +186,16 @@ export default function BookingCalendar() {
     resetForm();
   };
 
+  const handleVerifyId = () => {
+    if (!formData.idNumber || !idFile) {
+      alert('Please enter ID number and upload ID proof first.');
+      return;
+    }
+    // Simulate verification
+    setIsIdVerified(true);
+    alert('ID Verified Successfully!');
+  };
+
   const handleDeleteBooking = (id) => {
     if (window.confirm('Are you sure you want to delete this booking?')) {
       setBookings(bookings.filter(b => b.id !== id));
@@ -215,8 +230,12 @@ export default function BookingCalendar() {
       nationality: '',
       arrivalFrom: '',
       proceedingTo: '',
-      purposeOfVisit: ''
+      purposeOfVisit: '',
+      idType: 'Aadhar Card',
+      idNumber: ''
     });
+    setIdFile(null);
+    setIsIdVerified(false);
   };
 
   const isToday = (date) => {
@@ -248,22 +267,31 @@ export default function BookingCalendar() {
             <p className="text-text-secondary text-xs md:text-sm font-medium">Manage your hotel bookings and reservations</p>
           </div>
 
-          <button
-            onClick={() => {
-              setShowAddModal(true);
-              setActiveTab('guest');
-              setSelectedDate(new Date());
-              setFormData({
-                ...formData,
-                checkIn: new Date().toISOString().split('T')[0],
-                checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0]
-              });
-            }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5"
-          >
-            <Calendar size={18} />
-            New Booking
-          </button>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <button
+              onClick={() => setShowGroupModal(true)}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-bg-secondary border border-border-color text-text-primary rounded-xl font-medium hover:border-purple-500 hover:text-purple-500 hover:bg-purple-50 transition-all hover:-translate-y-0.5"
+            >
+              <Users size={18} />
+              <span className="whitespace-nowrap">Group Booking</span>
+            </button>
+            <button
+              onClick={() => {
+                setShowAddModal(true);
+                setActiveTab('guest');
+                setSelectedDate(new Date());
+                setFormData({
+                  ...formData,
+                  checkIn: new Date().toISOString().split('T')[0],
+                  checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0]
+                });
+              }}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5"
+            >
+              <Calendar size={18} />
+              <span className="whitespace-nowrap">New Booking</span>
+            </button>
+          </div>
         </div>
 
         {/* Quick Stats */}
@@ -282,7 +310,7 @@ export default function BookingCalendar() {
           </div>
           <div className="bg-bg-secondary rounded-xl p-3 md:p-4 border border-border-color">
             <p className="text-[10px] md:text-xs text-text-secondary font-medium mb-0.5 md:mb-1 uppercase tracking-wider">Revenue</p>
-            <p className="text-xl md:text-2xl font-bold text-purple-600">${stats.revenue.toLocaleString()}</p>
+            <p className="text-xl md:text-2xl font-bold text-purple-600">₹{stats.revenue.toLocaleString()}</p>
           </div>
         </div>
       </div>
@@ -458,6 +486,7 @@ export default function BookingCalendar() {
                   { id: 'guest', label: 'Guest Details' },
                   { id: 'room', label: 'Room Selection' },
                   { id: 'payment', label: 'Payment Details' },
+                  { id: 'idVerification', label: 'ID Verification' },
                   { id: 'cform', label: 'C-Form' }
                 ].map((tab) => (
                   <button
@@ -622,7 +651,7 @@ export default function BookingCalendar() {
                       </div>
                       <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-xs font-semibold text-text-primary mb-1.5">Total Amount ($) *</label>
+                          <label className="block text-xs font-semibold text-text-primary mb-1.5">Total Amount (₹) *</label>
                           <input
                             type="number"
                             value={formData.amount}
@@ -633,7 +662,7 @@ export default function BookingCalendar() {
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-semibold text-text-primary mb-1.5">Advance Amount ($)</label>
+                          <label className="block text-xs font-semibold text-text-primary mb-1.5">Advance Amount (₹)</label>
                           <input
                             type="number"
                             value={formData.advanceAmount}
@@ -652,6 +681,131 @@ export default function BookingCalendar() {
                           className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm resize-none"
                           placeholder="Any special requests or notes..."
                         />
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {activeTab === 'idVerification' && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    >
+                      <div className="md:col-span-2">
+                        <h3 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
+                          <CheckCircle size={18} className="text-purple-600" />
+                          ID Verification
+                        </h3>
+                      </div>
+                      <div className="relative">
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">ID Proof Type *</label>
+                        <button
+                          type="button"
+                          onClick={() => setIsIdTypeDropdownOpen(!isIdTypeDropdownOpen)}
+                          className="w-full px-4 py-2.5 bg-bg-primary border border-border-color rounded-xl text-text-primary flex items-center justify-between hover:border-purple-500 transition-all text-sm group"
+                        >
+                          <div className="flex items-center gap-2">
+                            {formData.idType === 'Passport' ? <Globe size={16} className="text-purple-600" /> : <CreditCard size={16} className="text-purple-600" />}
+                            <span className="font-medium">{formData.idType}</span>
+                          </div>
+                          <ChevronDown size={16} className={`text-text-secondary transition-transform duration-300 ${isIdTypeDropdownOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        <AnimatePresence>
+                          {isIdTypeDropdownOpen && (
+                            <motion.div
+                              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                              className="absolute top-full left-0 right-0 mt-2 bg-bg-secondary border border-border-color rounded-xl shadow-xl z-[60] py-2 overflow-hidden"
+                            >
+                              {[
+                                { name: 'Aadhar Card', icon: <CreditCard size={14} /> },
+                                { name: 'PAN Card', icon: <CreditCard size={14} /> },
+                                { name: 'Driving Licence', icon: <CreditCard size={14} /> },
+                                { name: 'Passport', icon: <Globe size={14} /> },
+                                { name: 'Voter ID', icon: <User size={14} /> }
+                              ].map((option) => (
+                                <button
+                                  key={option.name}
+                                  type="button"
+                                  onClick={() => {
+                                    setFormData({ ...formData, idType: option.name });
+                                    setIsIdTypeDropdownOpen(false);
+                                  }}
+                                  className={`w-full px-4 py-2.5 flex items-center gap-3 text-sm transition-all hover:bg-purple-500/5 text-left ${formData.idType === option.name ? 'text-purple-600 bg-purple-500/5 font-bold' : 'text-text-secondary hover:text-purple-600'}`}
+                                >
+                                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${formData.idType === option.name ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'bg-bg-primary text-text-secondary'}`}>
+                                    {option.icon}
+                                  </div>
+                                  {option.name}
+                                </button>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">ID Number *</label>
+                        <input
+                          type="text"
+                          value={formData.idNumber}
+                          onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
+                          className="w-full px-3 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm"
+                          placeholder="Enter ID number"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5 flex justify-between">
+                          Upload ID Proof *
+                          {idFile && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIdFile(null);
+                                setIsIdVerified(false);
+                              }}
+                              className="text-[10px] text-red-500 hover:underline"
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </label>
+                        <div className="relative h-32 group cursor-pointer">
+                          <input
+                            type="file"
+                            className="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer"
+                            onChange={(e) => {
+                              setIdFile(e.target.files[0]);
+                              setIsIdVerified(false);
+                            }}
+                          />
+                          <div className={`absolute inset-0 border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-2 transition-all ${isIdVerified ? 'border-green-500 bg-green-50 dark:bg-green-900/10' : 'border-border-color group-hover:border-purple-500 group-hover:bg-purple-500/5'}`}>
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${isIdVerified ? 'bg-green-500 text-white' : 'bg-bg-primary text-text-secondary group-hover:text-purple-500'}`}>
+                              {isIdVerified ? <Check size={20} /> : <Plus size={20} />}
+                            </div>
+                            <div className="text-center">
+                              <span className={`text-xs font-bold block ${isIdVerified ? 'text-green-600' : 'text-text-primary'}`}>{idFile ? idFile.name : 'Click or Drag to Upload'}</span>
+                              <span className="text-[10px] text-text-secondary mt-1">{isIdVerified ? 'Successfully Verified' : 'PDF, JPG, PNG (Max 5MB)'}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="md:col-span-2 pt-2">
+                        {!isIdVerified ? (
+                          <button
+                            type="button"
+                            onClick={handleVerifyId}
+                            className="w-full py-2.5 rounded-xl bg-purple-100 text-purple-600 font-bold text-xs uppercase hover:bg-purple-200 transition-all border border-purple-200"
+                          >
+                            Verify ID Document
+                          </button>
+                        ) : (
+                          <div className="flex items-center gap-2 text-green-600 bg-green-50 dark:bg-green-900/20 px-4 py-2.5 rounded-xl border border-green-200 dark:border-green-800/30">
+                            <Check size={16} />
+                            <span className="text-xs font-bold uppercase tracking-wider">ID Document Verified</span>
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   )}
@@ -713,7 +867,7 @@ export default function BookingCalendar() {
                     <button
                       type="button"
                       onClick={() => {
-                        const tabs = ['guest', 'room', 'payment', 'cform'];
+                        const tabs = ['guest', 'room', 'payment', 'idVerification', 'cform'];
                         const currentIndex = tabs.indexOf(activeTab);
                         setActiveTab(tabs[currentIndex - 1]);
                       }}
@@ -726,7 +880,7 @@ export default function BookingCalendar() {
                     <button
                       type="button"
                       onClick={() => {
-                        const tabs = ['guest', 'room', 'payment', 'cform'];
+                        const tabs = ['guest', 'room', 'payment', 'idVerification', 'cform'];
                         const currentIndex = tabs.indexOf(activeTab);
                         setActiveTab(tabs[currentIndex + 1]);
                       }}
@@ -737,9 +891,10 @@ export default function BookingCalendar() {
                   ) : (
                     <button
                       type="submit"
-                      className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-bold hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/30"
+                      disabled={!isIdVerified}
+                      className={`flex-1 px-4 py-3 rounded-xl font-bold transition-all shadow-lg ${isIdVerified ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white hover:from-purple-700 hover:to-purple-600 shadow-purple-500/30' : 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200 shadow-none'}`}
                     >
-                      Confirm Booking
+                      {isIdVerified ? 'Confirm Booking' : 'Verify ID to Confirm'}
                     </button>
                   )}
                 </div>
@@ -856,7 +1011,7 @@ export default function BookingCalendar() {
                       <DollarSign size={18} className="text-purple-600 dark:text-purple-400" />
                       <p className="text-xs font-medium text-text-secondary uppercase font-bold tracking-wider">Total Amount</p>
                     </div>
-                    <p className="text-xl font-bold text-purple-600 dark:text-purple-400">${selectedBooking.amount}</p>
+                    <p className="text-xl font-bold text-purple-600 dark:text-purple-400">₹{selectedBooking.amount}</p>
                   </div>
                 </div>
 
@@ -886,6 +1041,97 @@ export default function BookingCalendar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+
+      {/* Group Booking Modal */}
+      <AnimatePresence>
+        {showGroupModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-bg-secondary rounded-2xl w-full max-w-2xl border border-border-color shadow-2xl max-h-[90vh] overflow-y-auto"
+            >
+              <div className="bg-bg-secondary border-b border-border-color px-6 py-5 flex justify-between items-center rounded-t-2xl sticky top-0 z-10">
+                <div>
+                  <h2 className="text-xl font-bold text-text-primary">New Group Booking</h2>
+                  <p className="text-xs text-text-secondary mt-0.5">Please fill in the group reservation details</p>
+                </div>
+                <button
+                  onClick={() => setShowGroupModal(false)}
+                  className="w-9 h-9 rounded-xl border border-border-color bg-bg-primary text-text-secondary flex items-center justify-center hover:border-red-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-primary mb-1.5 uppercase tracking-wider">Group Name *</label>
+                    <input type="text" className="w-full px-3.5 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm h-10" placeholder="e.g. Wedding Party" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-primary mb-1.5 uppercase tracking-wider">Contact Person *</label>
+                    <input type="text" className="w-full px-3.5 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm h-10" placeholder="Full Name" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-primary mb-1.5 uppercase tracking-wider">Contact Phone *</label>
+                    <input type="text" className="w-full px-3.5 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm h-10" placeholder="+91..." />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-primary mb-1.5 uppercase tracking-wider">Contact Email *</label>
+                    <input type="email" className="w-full px-3.5 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm h-10" placeholder="email@example.com" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-primary mb-1.5 uppercase tracking-wider">Check-in Date *</label>
+                    <input type="date" className="w-full px-3.5 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm h-10" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-primary mb-1.5 uppercase tracking-wider">Check-out Date *</label>
+                    <input type="date" className="w-full px-3.5 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm h-10" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-primary mb-1.5 uppercase tracking-wider">Number of Rooms *</label>
+                    <input type="number" className="w-full px-3.5 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm h-10" placeholder="e.g. 5" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-primary mb-1.5 uppercase tracking-wider">Total Guests *</label>
+                    <input type="number" className="w-full px-3.5 py-2 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm h-10" placeholder="e.g. 10" />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-[10px] font-bold text-text-primary mb-1.5 uppercase tracking-wider">Special Requests / Notes</label>
+                  <textarea rows="3" className="w-full px-3.5 py-3 bg-bg-primary border border-border-color rounded-lg text-text-primary outline-none focus:border-purple-500 transition-all text-sm resize-none" placeholder="Enter any additional requirements..."></textarea>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-2 px-6 pb-6 pt-4 border-t border-border-color">
+                <button
+                  onClick={() => setShowGroupModal(false)}
+                  className="flex-1 px-4 py-2.5 bg-bg-primary border border-border-color rounded-lg text-text-secondary font-semibold hover:bg-bg-secondary transition-all text-xs"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    alert('Group Booking Request Created!');
+                    setShowGroupModal(false);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-purple-600 transition-all hover:-translate-y-0.5 shadow-lg shadow-purple-500/20 active:translate-y-0 text-xs"
+                >
+                  Create Group Booking
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div >
   );
 }

@@ -4,18 +4,23 @@ import { useState, useEffect, useRef } from 'react';
 import {
   Search,
   ChevronDown,
-  Eye,
   CheckCircle,
   X,
   Calendar,
-  DollarSign,
-  Users
+  IndianRupee as DollarSign,
+  Users,
+  LogIn,
+  LogOut
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function BookingList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
+  const [selectedBookingForCheckIn, setSelectedBookingForCheckIn] = useState(null);
+  const [checkInDetails, setCheckInDetails] = useState({ name: '', mobile: '' });
 
   // State for bookings data
   const [bookings, setBookings] = useState([
@@ -28,9 +33,9 @@ export default function BookingList() {
       checkOut: '12/03/2026',
       guests: 2,
       status: 'Checked-in',
-      total: '$316',
-      paid: '$316',
-      balance: '$0'
+      total: '₹316',
+      paid: '₹316',
+      balance: '₹0'
     },
     {
       id: 'BK002',
@@ -41,9 +46,9 @@ export default function BookingList() {
       checkOut: '14/01/2026',
       guests: 3,
       status: 'Checked-in',
-      total: '$2120',
-      paid: '$2120',
-      balance: '$0'
+      total: '₹2120',
+      paid: '₹2120',
+      balance: '₹0'
     },
     {
       id: 'BK003',
@@ -54,9 +59,9 @@ export default function BookingList() {
       checkOut: '11/01/2026',
       guests: 2,
       status: 'Checked-in',
-      total: '$640',
-      paid: '$640',
-      balance: '$0'
+      total: '₹640',
+      paid: '₹640',
+      balance: '₹0'
     },
     {
       id: 'BK004',
@@ -67,9 +72,9 @@ export default function BookingList() {
       checkOut: '08/01/2026',
       guests: 4,
       status: 'Checked-out',
-      total: '$1512',
-      paid: '$1512',
-      balance: '$0'
+      total: '₹1512',
+      paid: '₹1512',
+      balance: '₹0'
     },
     {
       id: 'BK005',
@@ -80,9 +85,9 @@ export default function BookingList() {
       checkOut: '18/01/2026',
       guests: 2,
       status: 'Confirmed',
-      total: '$800',
-      paid: '$320',
-      balance: '$480'
+      total: '₹800',
+      paid: '₹320',
+      balance: '₹480'
     },
     {
       id: 'BK006',
@@ -93,9 +98,9 @@ export default function BookingList() {
       checkOut: '15/01/2026',
       guests: 1,
       status: 'Confirmed',
-      total: '$168',
-      paid: '$168',
-      balance: '$0'
+      total: '₹168',
+      paid: '₹168',
+      balance: '₹0'
     },
     {
       id: 'BK007',
@@ -106,9 +111,9 @@ export default function BookingList() {
       checkOut: '19/01/2026',
       guests: 3,
       status: 'Canceled',
-      total: '$640',
-      paid: '$0',
-      balance: '$640'
+      total: '₹640',
+      paid: '₹0',
+      balance: '₹640'
     }
   ]);
 
@@ -119,7 +124,7 @@ export default function BookingList() {
   const confirmedBookings = bookings.filter(b => b.status === 'Confirmed').length;
   const checkedInBookings = bookings.filter(b => b.status === 'Checked-in').length;
   const totalRevenue = bookings.reduce((sum, b) => {
-    const amount = parseInt(b.total.replace('$', '').replace(',', ''));
+    const amount = parseInt(b.total.replace('₹', '').replace('$', '').replace(',', ''));
     return sum + amount;
   }, 0);
 
@@ -168,14 +173,28 @@ export default function BookingList() {
     }
   };
 
-  const handleView = (bookingId) => {
-    alert(`Viewing booking: ${bookingId}`);
+  const handleCheckInClick = (booking) => {
+    setSelectedBookingForCheckIn(booking);
+    setCheckInDetails({ name: booking.guestName, mobile: '' }); // Pre-fill name
+    setIsCheckInModalOpen(true);
   };
 
-  const handleCheckIn = (bookingId) => {
-    if (window.confirm(`Check in booking ${bookingId}?`)) {
+  const confirmCheckIn = (e) => {
+    e.preventDefault();
+    if (!checkInDetails.mobile) return alert('Please enter mobile number');
+
+    setBookings(bookings.map(b =>
+      b.id === selectedBookingForCheckIn.id ? { ...b, status: 'Checked-in' } : b
+    ));
+    setIsCheckInModalOpen(false);
+    // Optionally save extra details somewhere or log
+    console.log("Checked in with:", checkInDetails);
+  };
+
+  const handleCheckOut = (bookingId) => {
+    if (window.confirm(`Check out booking ${bookingId}?`)) {
       setBookings(bookings.map(b =>
-        b.id === bookingId ? { ...b, status: 'Checked-in' } : b
+        b.id === bookingId ? { ...b, status: 'Checked-out' } : b
       ));
     }
   };
@@ -238,7 +257,7 @@ export default function BookingList() {
           </div>
           <div className="flex-1">
             <div className="text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5">Total Revenue</div>
-            <div className="text-3xl font-bold text-primary">${totalRevenue.toLocaleString()}</div>
+            <div className="text-3xl font-bold text-primary">₹{totalRevenue.toLocaleString()}</div>
           </div>
         </div>
       </div>
@@ -339,36 +358,36 @@ export default function BookingList() {
                   </td>
                   <td className="px-5 py-5 text-primary font-bold whitespace-nowrap">{booking.total}</td>
                   <td className="px-5 py-5 text-green-500 dark:text-green-400 font-bold whitespace-nowrap">{booking.paid}</td>
-                  <td className={`px-5 py-5 font-bold whitespace-nowrap ${booking.balance === '$0' ? 'text-secondary' : 'text-red-500 dark:text-red-400'}`}>
+                  <td className={`px-5 py-5 font-bold whitespace-nowrap ${booking.balance === '₹0' || booking.balance === '$0' ? 'text-secondary' : 'text-red-500 dark:text-red-400'}`}>
                     {booking.balance}
                   </td>
                   <td className="px-5 py-5 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <button
-                        className="w-8 h-8 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-secondary flex items-center justify-center cursor-pointer hover:border-purple-500 hover:text-purple-500 transition-all shadow-sm"
-                        title="View"
-                        onClick={() => handleView(booking.id)}
-                      >
-                        <Eye size={16} />
-                      </button>
                       {booking.status === 'Confirmed' && (
                         <button
-                          className="w-8 h-8 rounded-lg border border-green-500/30 dark:border-green-500/20 bg-green-500/5 text-green-500 flex items-center justify-center cursor-pointer hover:bg-green-500 hover:text-white transition-all shadow-sm"
+                          className="w-8 h-8 rounded-lg border border-purple-500/30 dark:border-purple-500/20 bg-purple-500/5 text-purple-600 flex items-center justify-center cursor-pointer hover:bg-purple-600 hover:text-white transition-all shadow-sm"
                           title="Check In"
-                          onClick={() => handleCheckIn(booking.id)}
+                          onClick={() => handleCheckInClick(booking)}
                         >
-                          <CheckCircle size={16} />
+                          <LogIn size={16} />
                         </button>
                       )}
-                      {(booking.status === 'Confirmed' || booking.status === 'Checked-in') && (
+                      {booking.status === 'Checked-in' && (
                         <button
-                          className="w-8 h-8 rounded-lg border border-red-500/30 dark:border-red-500/20 bg-red-500/5 text-red-500 flex items-center justify-center cursor-pointer hover:bg-red-500 hover:text-white transition-all shadow-sm"
-                          title="Cancel"
-                          onClick={() => handleCancel(booking.id)}
+                          className="w-8 h-8 rounded-lg border border-orange-500/30 dark:border-orange-500/20 bg-orange-500/5 text-orange-600 flex items-center justify-center cursor-pointer hover:bg-orange-600 hover:text-white transition-all shadow-sm"
+                          title="Check Out"
+                          onClick={() => handleCheckOut(booking.id)}
                         >
-                          <X size={16} />
+                          <LogOut size={16} />
                         </button>
                       )}
+                      <button
+                        className="w-8 h-8 rounded-lg border border-red-500/30 dark:border-red-500/20 bg-red-500/5 text-red-500 flex items-center justify-center cursor-pointer hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                        title="Cancel"
+                        onClick={() => handleCancel(booking.id)}
+                      >
+                        <X size={16} />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -377,6 +396,72 @@ export default function BookingList() {
           </table>
         </div>
       </div>
+
+      {/* Check In Modal */}
+      <AnimatePresence>
+        {isCheckInModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-gray-100 dark:border-slate-800"
+            >
+              <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50">
+                <h3 className="text-xl font-bold text-primary">Check In Guest</h3>
+                <button onClick={() => setIsCheckInModalOpen(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-secondary transition-colors">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <form onSubmit={confirmCheckIn} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">Guest Name</label>
+                  <input
+                    type="text"
+                    value={checkInDetails.name}
+                    onChange={(e) => setCheckInDetails({ ...checkInDetails, name: e.target.value })}
+                    required
+                    className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-medium text-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">Mobile Number</label>
+                  <input
+                    type="tel"
+                    value={checkInDetails.mobile}
+                    onChange={(e) => setCheckInDetails({ ...checkInDetails, mobile: e.target.value })}
+                    required
+                    placeholder="e.g. +1 234 567 8900"
+                    className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-medium text-primary"
+                  />
+                </div>
+
+                <div className="pt-4 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsCheckInModalOpen(false)}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 text-secondary font-bold text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-purple-600 text-white font-bold text-sm hover:bg-purple-700 transition-all shadow-lg shadow-purple-500/20"
+                  >
+                    Confirm Check In
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

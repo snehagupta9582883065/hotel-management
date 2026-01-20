@@ -8,7 +8,8 @@ import {
   Plus,
   Edit2,
   Trash2,
-  X
+  X,
+  IndianRupee
 } from 'lucide-react';
 
 export default function SeasonalPricingPage() {
@@ -25,7 +26,7 @@ export default function SeasonalPricingPage() {
   const [rules, setRules] = useState([
     { id: 1, name: 'Summer Peak Season', start: '2026-06-01', end: '2026-08-31', roomType: 'All Rooms', adjustmentType: 'Percentage (%)', adjustmentValue: '30', priority: 1, status: 'scheduled' },
     { id: 2, name: 'Holiday Season', start: '2025-12-20', end: '2026-01-05', roomType: 'All Rooms', adjustmentType: 'Percentage (%)', adjustmentValue: '50', priority: 2, status: 'active' },
-    { id: 3, name: 'Weekend Premium', start: '2026-01-01', end: '2026-12-31', roomType: 'Deluxe Suite', adjustmentType: 'Fixed Amount ($)', adjustmentValue: '50', priority: 3, status: 'active' },
+    { id: 3, name: 'Weekend Premium', start: '2026-01-01', end: '2026-12-31', roomType: 'Deluxe Suite', adjustmentType: 'Fixed Amount (₹)', adjustmentValue: '50', priority: 3, status: 'active' },
   ]);
 
   const initialFormState = {
@@ -173,7 +174,7 @@ export default function SeasonalPricingPage() {
             <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
               {rules.map((rule) => {
                 const isPercentage = rule.adjustmentType === 'Percentage (%)';
-                const displayAdjustment = isPercentage ? `+${rule.adjustmentValue}%` : `+$${rule.adjustmentValue}`;
+                const displayAdjustment = isPercentage ? `+${rule.adjustmentValue}%` : `+₹${rule.adjustmentValue}`;
 
                 return (
                   <tr key={rule.id} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/50 transition-colors">
@@ -312,7 +313,7 @@ export default function SeasonalPricingPage() {
                       className="w-full px-4 py-2.5 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-accent-primary outline-none transition-all text-sm text-primary"
                     >
                       <option>Percentage (%)</option>
-                      <option>Fixed Amount ($)</option>
+                      <option>Fixed Amount (₹)</option>
                     </select>
                   </div>
                   <div className="space-y-1.5">

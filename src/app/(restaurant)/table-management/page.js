@@ -9,18 +9,18 @@ import {
 
 // Mock Data
 const initialTablesData = [
-    { id: 'T1', capacity: 2, status: 'available', shape: 'round' },
+    { id: 'T1', capacity: 2, status: 'available', shape: 'rect' },
     { id: 'T2', capacity: 4, status: 'occupied', guests: 3, orderId: 'R001', timeElapsed: '45m', shape: 'rect', since: '12:30 PM' },
     { id: 'T3', capacity: 4, status: 'available', shape: 'rect' },
-    { id: 'T4', capacity: 2, status: 'reserved', time: '7:00 PM', shape: 'round' },
+    { id: 'T4', capacity: 2, status: 'reserved', time: '7:00 PM', shape: 'rect' },
     { id: 'T5', capacity: 6, status: 'occupied', guests: 6, orderId: 'R003', timeElapsed: '1h 15m', shape: 'rect', since: '1:15 PM' },
-    { id: 'T6', capacity: 2, status: 'cleaning', shape: 'round' },
+    { id: 'T6', capacity: 2, status: 'cleaning', shape: 'rect' },
     { id: 'T7', capacity: 4, status: 'available', shape: 'rect' },
     { id: 'T8', capacity: 8, status: 'reserved', time: '8:30 PM', shape: 'rect' },
-    { id: 'T9', capacity: 2, status: 'available', shape: 'round' },
+    { id: 'T9', capacity: 2, status: 'available', shape: 'rect' },
     { id: 'T10', capacity: 4, status: 'occupied', guests: 2, orderId: 'R005', timeElapsed: '12m', shape: 'rect', since: '2:00 PM' },
     { id: 'T11', capacity: 6, status: 'available', shape: 'rect' },
-    { id: 'T12', capacity: 2, status: 'available', shape: 'round' },
+    { id: 'T12', capacity: 2, status: 'available', shape: 'rect' },
 ];
 
 const stats = [
@@ -384,7 +384,6 @@ export default function TableManagement() {
                 >
                     {filteredTables.map((table) => {
                         const config = statusConfig[table.status];
-                        const isRound = table.shape === 'round';
 
                         return (
                             <motion.div
@@ -406,19 +405,18 @@ export default function TableManagement() {
                                 </div>
 
                                 <div className="flex-1 flex items-center justify-center py-4 relative">
-                                    <div className={`absolute inset-0 flex items-center justify-center ${isRound ? 'animate-spin-slow-off' : ''}`}>
+                                    <div className="absolute inset-0 flex items-center justify-center">
                                         {Array.from({ length: table.capacity }).map((_, i) => (
                                             <div
                                                 key={i}
                                                 className={`absolute w-8 h-2 ${config.stroke.replace('border', 'bg')} rounded-full opacity-40`}
                                                 style={{
-                                                    transform: `rotate(${i * (360 / table.capacity)}deg) translate(${isRound ? '28px' : '36px'})`
+                                                    transform: `rotate(${i * (360 / table.capacity)}deg) translate(36px)`
                                                 }}
                                             />
                                         ))}
                                     </div>
-                                    <div className={`relative z-10 border-2 ${config.stroke} ${config.fill} backdrop-blur-md flex items-center justify-center transition-all duration-500
-                                        ${isRound ? 'w-16 h-16 rounded-full' : 'w-24 h-14 rounded-lg'}
+                                    <div className={`relative z-10 border-2 ${config.stroke} ${config.fill} backdrop-blur-md flex items-center justify-center transition-all duration-500 w-24 h-14 rounded-lg
                                         ${table.status === 'occupied' ? 'shadow-[0_0_15px_rgba(0,0,0,0.1)]' : ''}
                                     `}>
                                         <span className="text-xs font-bold opacity-60 mix-blend-multiply dark:mix-blend-screen">{table.capacity}</span>
@@ -516,21 +514,7 @@ export default function TableManagement() {
                                         className="w-full bg-bg-primary dark:bg-slate-950/50 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"
                                     />
                                 </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-text-secondary uppercase tracking-wider mb-2">Shape</label>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {['rect', 'round'].map(shape => (
-                                            <button
-                                                key={shape}
-                                                type="button"
-                                                onClick={() => setNewTable({ ...newTable, shape })}
-                                                className={`py-2 px-3 rounded-lg text-sm font-medium border capitalize ${newTable.shape === shape ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-500 text-purple-700 dark:text-purple-300' : 'border-gray-200 dark:border-white/10 text-text-secondary'}`}
-                                            >
-                                                {shape}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+
 
                                 <button
                                     type="submit"

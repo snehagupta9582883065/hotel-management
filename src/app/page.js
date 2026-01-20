@@ -3,9 +3,11 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-  TrendingUp, Users, CalendarCheck, DollarSign,
+  TrendingUp, Users, CalendarCheck,
   ArrowUpRight, LogIn, LogOut,
-  Bed, FileText, Plus, TrendingDown
+  Bed, FileText, Plus, TrendingDown,
+  IndianRupee,
+  Users2
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -273,8 +275,8 @@ export default function Dashboard() {
         {/* Row 1: Key Metrics (Tall/Wide) */}
         <StatCard
           title="Today's Revenue"
-          value={`$${kpi_stats.today_revenue.value.toLocaleString()}`}
-          icon={DollarSign}
+          value={`₹${kpi_stats.today_revenue.value.toLocaleString()}`}
+          icon={IndianRupee}
           trend={kpi_stats.today_revenue.trend_percentage}
           className="md:col-span-2"
         />
@@ -384,13 +386,14 @@ export default function Dashboard() {
       {/* Quick Links */}
       <motion.div variants={containerVariant}>
         <h3 className="text-lg md:text-xl font-bold text-text-primary mb-3 md:mb-4">Quick Links</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 md:gap-4">
           <QuickLink icon={Plus} label="Booking List" href="/booking-list" />
           <QuickLink icon={LogIn} label="Check In" href="/room-management" />
           <QuickLink icon={LogOut} label="Check Out" href="/room-management" />
           <QuickLink icon={Bed} label="Rooms" href="/room-management" />
           <QuickLink icon={Users} label="Guests" href="/guest-list" />
           <QuickLink icon={FileText} label="Reports" href="/reports" />
+          <QuickLink icon={Users2} label="Staff" href="/staff-list" />
         </div>
       </motion.div>
 

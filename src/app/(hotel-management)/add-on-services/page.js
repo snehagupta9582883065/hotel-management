@@ -187,7 +187,7 @@ export default function AddOnServicesPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-secondary">{service.category}</td>
-                  <td className="px-6 py-4 text-sm font-semibold text-primary">${service.price}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-primary">₹{service.price}</td>
                   <td className="px-6 py-4 text-sm text-secondary">{service.unit}</td>
 
                   {/* Taxable Toggle */}
@@ -315,7 +315,7 @@ export default function AddOnServicesPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-secondary">Price ($)</label>
+                    <label className="text-sm font-semibold text-secondary">Price (₹)</label>
                     <input
                       type="number"
                       name="price"

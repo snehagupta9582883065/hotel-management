@@ -31,6 +31,7 @@ const MENU_ITEMS = [
             { name: "Seasonal Pricing", path: "/seasonal-pricing" },
             { name: "Add-On Services", path: "/add-on-services" },
             { name: "Housekeeping", path: "/housekeeping" },
+            { name: "Departments", path: "/departments" },
         ],
     },
     {
@@ -39,7 +40,6 @@ const MENU_ITEMS = [
         submenu: [
             { name: "Booking Calendar", path: "/booking-calendar" },
             { name: "Booking List", path: "/booking-list" },
-            { name: "Group Booking", path: "/group-booking" },
         ],
     },
     {
@@ -74,12 +74,9 @@ const MENU_ITEMS = [
         ],
     },
     {
-        name: "Staff & Roles",
+        name: "Staff",
         icon: UserCog,
-        submenu: [
-            { name: "Staff List", path: "/staff-list" },
-            { name: "Roles & Permissions", path: "/roles-permissions" },
-        ],
+        path: "/staff-list",
     },
     {
         name: "Reports & Analytics",
