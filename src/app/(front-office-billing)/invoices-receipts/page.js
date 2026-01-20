@@ -8,7 +8,6 @@ import {
   Printer,
   Download,
   Mail,
-  Mail,
   X,
   CheckCircle,
   AlertCircle,
